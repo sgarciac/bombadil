@@ -1,0 +1,14 @@
+{
+  "name": "bombadil",
+  "version": "0.0.1",
+  "description": "A TOML parser",
+  "keywords": [
+    "toml"
+  ],
+  "author": "sergio <sergio.garcia@gmail.com>",
+  "license": "Artistic-2.0",
+  "dependencies": {
+    "@types/node": "^7.0.11",
+    "chevrotain": "^0.25.1"
+  }
+}
