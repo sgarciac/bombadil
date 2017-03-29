@@ -1,5 +1,11 @@
-tu """\
-   hello\  
-   amigo\
-"""
-hello
+
+[1.b.c]   a = 1
+'b' = 2
+c = "mis amigos son mis amigos"
+"d" = '''
+y no los amigos
+de 
+  los 
+     demas'''
+sergio = [1,2,3]
+
