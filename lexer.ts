@@ -5,7 +5,7 @@ export class OneLineComment extends ct.Token {
   static GROUP = ct.Lexer.SKIPPED;
 }
 
-export class Identifier extends ct.Token { 
+export class Identifier extends ct.Token {
   static PATTERN = /[A-Za-z0-9_-]+/;
 }
 
@@ -27,7 +27,7 @@ export class WhiteSpace extends ct.Token {
   static GROUP = ct.Lexer.SKIPPED;
 }
 
-// The Value mode
+// The top value mode
 export class OpenValue extends ct.Token {
   static PATTERN = /=/;
   static PUSH_MODE = "value"
@@ -38,6 +38,26 @@ export class CloseValue extends ct.Token {
   static POP_MODE = true;
 }
 
+// The inner value mode
+export class OpenInnerTable extends ct.Token {
+  static PATTERN = /\{/;
+  static PUSH_MODE = "inner_table"
+}
+
+export class CloseInnerTable extends ct.Token {
+  static PATTERN = /\n+/;
+  static POP_MODE = true;
+}
+
+export class OpenInnerValue extends ct.Token {
+  static PATTERN = /=/;
+  static PUSH_MODE = "inner_value"
+}
+
+export class CloseInnerValue extends ct.Token {
+  static PATTERN = /[,\}]/;
+  static POP_MODE = true;
+}
 
 export class Comma extends ct.Token {
   static PATTERN = /,/;
@@ -117,7 +137,7 @@ export class MultiLineLiteralString extends ct.Token {
 }
 
 export class Booolean extends ct.Token {
-  static PATTERN = /((true)(?!(\s*=)))|((false(?!(\s*=))))/;
+  static PATTERN = /true|false/;
 }
 
 export class OpenArray extends ct.Token {
@@ -140,77 +160,93 @@ export class CloseTable extends ct.Token {
   static POP_MODE = true;
 }
 
-var open_all_strings : ct.TokenConstructor[] = [
-OpenMultiLineBasicString, 
-OpenMultiLineLiteralString,
-OpenBasicString, 
-OpenLiteralString];
+var open_all_strings: ct.TokenConstructor[] = [
+  OpenMultiLineBasicString,
+  OpenMultiLineLiteralString,
+  OpenBasicString,
+  OpenLiteralString];
 
-var primitive_literals : ct.TokenConstructor[]= [
-Integer,
-Float, 
-Booolean,
+var primitive_literals: ct.TokenConstructor[] = [
+  Integer,
+  Float,
+  Booolean,
 ]
 
-var open_identifier_strings : ct.TokenConstructor[] = [
-OpenBasicString,
-OpenLiteralString
+var open_identifier_strings: ct.TokenConstructor[] = [
+  OpenBasicString,
+  OpenLiteralString
 ]
 
-var single_line_skipped : ct.TokenConstructor[] = [
-WhiteSpace,
-OneLineComment,
-]
-
-var all_skipped : ct.TokenConstructor[] = [
+var single_line_skipped: ct.TokenConstructor[] = [
   WhiteSpace,
-  EndOfLine, 
-  OneLineComment, 
+  OneLineComment,
 ]
 
-var modes : ct.IMultiModeLexerDefinition = {
+var all_skipped: ct.TokenConstructor[] = [
+  WhiteSpace,
+  EndOfLine,
+  OneLineComment,
+]
+
+var modes: ct.IMultiModeLexerDefinition = {
   modes: {
     top: [
-    OpenTable,
-    Identifier,
-    ...open_identifier_strings,
-    ...all_skipped,
-    OpenValue,
+      OpenTable,
+      Identifier,
+      ...open_identifier_strings,
+      ...all_skipped,
+      OpenValue,
     ],
     value: [
-    ...open_all_strings, 
-    ...primitive_literals,
-    ...single_line_skipped,
-    OpenArray,
-    CloseValue
-    ], 
+      ...open_all_strings,
+      ...primitive_literals,
+      ...single_line_skipped,
+      OpenArray,
+      OpenInnerTable,
+      CloseValue
+    ],
     table: [
-    Identifier,
-    Dot,
-    WhiteSpace,
-    ...open_identifier_strings,
-    CloseTable
+      Identifier,
+      ...open_identifier_strings,
+      Dot,
+      WhiteSpace,
+      CloseTable
     ]
     ,
     array: [
-    ...primitive_literals,
-    ...all_skipped,
-    ...open_all_strings,
-    Comma,
-    OpenArray,
-    CloseArray
+      ...primitive_literals,
+      ...all_skipped,
+      ...open_all_strings,
+      Comma,
+      OpenArray,
+      CloseArray
     ],
-    basic_string: [CloseBasicString, 
-    EscapedChar, 
-    EscapedUnicode, 
-    SubBasicString],
-    multi_line_basic_string: [CloseMultiLineBasicString, 
-    EscapedChar, 
-    EscapedUnicode, 
-    MultiLineIgnorableSubstring, 
-    SubMultiLineBasicString],
-    literal_string: [LiteralString, 
-    CloseLiteralString],
+    inner_table: [
+      Identifier,
+      ...open_identifier_strings,
+      ...single_line_skipped,
+      OpenInnerValue,
+      CloseInnerTable
+    ],
+    inner_value: [
+      ...open_all_strings,
+      ...primitive_literals,
+      ...single_line_skipped,
+      OpenArray,
+      OpenInnerTable,
+      CloseInnerValue
+    ],
+    basic_string: [CloseBasicString,
+      EscapedChar,
+      EscapedUnicode,
+      SubBasicString],
+    multi_line_basic_string: [CloseMultiLineBasicString,
+      EscapedChar,
+      EscapedUnicode,
+      MultiLineIgnorableSubstring,
+      SubMultiLineBasicString],
+    literal_string: [LiteralString,
+      CloseLiteralString],
     multi_line_literal_string: [MultiLineLiteralString, CloseMultiLineLiteralString]
   },
   defaultMode: "top"
@@ -218,6 +254,6 @@ var modes : ct.IMultiModeLexerDefinition = {
 
 var myLexer = new ct.Lexer(modes);
 
-export function tokenize(input){
+export function tokenize(input) {
   return myLexer.tokenize(input);
 }

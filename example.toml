@@ -8,4 +8,4 @@ de
   los 
      demas'''
 sergio = [1,2,3]
-
+amigo = {a=1,'b'=[1,2,3]}
