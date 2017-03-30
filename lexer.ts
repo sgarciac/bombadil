@@ -1,6 +1,5 @@
 import ct = require("chevrotain")
 
-
 export class OneLineComment extends ct.Token {
   static PATTERN = /#.*/;
   static GROUP = ct.Lexer.SKIPPED;
@@ -141,52 +140,63 @@ export class CloseTable extends ct.Token {
   static POP_MODE = true;
 }
 
-var modes = {
+var open_all_strings : ct.TokenConstructor[] = [
+OpenMultiLineBasicString, 
+OpenMultiLineLiteralString,
+OpenBasicString, 
+OpenLiteralString];
+
+var primitive_literals : ct.TokenConstructor[]= [
+Integer,
+Float, 
+Booolean,
+]
+
+var open_identifier_strings : ct.TokenConstructor[] = [
+OpenBasicString,
+OpenLiteralString
+]
+
+var single_line_skipped : ct.TokenConstructor[] = [
+WhiteSpace,
+OneLineComment,
+]
+
+var all_skipped : ct.TokenConstructor[] = [
+  WhiteSpace,
+  EndOfLine, 
+  OneLineComment, 
+]
+
+var modes : ct.IMultiModeLexerDefinition = {
   modes: {
     top: [
     OpenTable,
     Identifier,
-    OpenBasicString,
-    OpenLiteralString, 
+    ...open_identifier_strings,
+    ...all_skipped,
     OpenValue,
-    WhiteSpace,
-    EndOfLine, 
-    OneLineComment, 
     ],
     value: [
-    Float,
-    Integer,
-    Booolean,
-    WhiteSpace,
-    OneLineComment,
-    OpenMultiLineBasicString, 
-    OpenMultiLineLiteralString,
-    OpenBasicString, 
-    OpenLiteralString,
+    ...open_all_strings, 
+    ...primitive_literals,
+    ...single_line_skipped,
     OpenArray,
     CloseValue
-    ],
+    ], 
     table: [
-      Identifier,
-      Dot,
-      WhiteSpace,
-      OpenBasicString,
-      OpenLiteralString,
-      CloseTable
+    Identifier,
+    Dot,
+    WhiteSpace,
+    ...open_identifier_strings,
+    CloseTable
     ]
     ,
     array: [
-    Float,
-    Integer,
-    Booolean,
-    WhiteSpace,
-    EndOfLine,
+    ...primitive_literals,
+    ...all_skipped,
+    ...open_all_strings,
     Comma,
-    OneLineComment,
-    OpenMultiLineBasicString, 
-    OpenMultiLineLiteralString,
-    OpenBasicString, 
-    OpenLiteralString,
     OpenArray,
     CloseArray
     ],
