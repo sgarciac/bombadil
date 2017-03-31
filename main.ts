@@ -3,7 +3,8 @@ import ct = require('chevrotain');
 
 import fs = require('fs');
 let example_text = fs.readFileSync("example.toml").toString();
-console.log(example_text);
-console.log(toml_lexer.tokenize(example_text));
+let result = toml_lexer.tokenize(example_text); 
+console.log(result.errors);
+console.log(JSON.stringify(result.tokens,null,4));
 
 

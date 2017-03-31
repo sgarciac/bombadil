@@ -120,11 +120,10 @@ export class CloseMultiLineLiteralString extends ct.Token {
 
 export class EscapedChar extends ct.Token {
   static PATTERN = /(\\b)|(\\t)|(\\n)|(\\f)|(\\")|(\\r)|(\\\\)/
-  static GROUP = ct.Lexer.SKIPPED;
 }
 
 export class EscapedUnicode extends ct.Token {
-  static PATTERN = /(\\u\d{4})|(\\U\d{6})/
+  static PATTERN = /(\\u([0-9A-Fa-f]{4}))|(\\U([0-9A-Fa-f]{6}))/
 }
 
 export class SubBasicString extends ct.Token {
@@ -163,7 +162,7 @@ export class OpenTable extends ct.Token {
 }
 
 export class CloseTable extends ct.Token {
-  static PATTERN = /\][^\S\n]*\n/;
+  static PATTERN = /\]((([^\S\n]*#.*)|[^\S\n]*)\n)/;
   static POP_MODE = true;
 }
 
@@ -186,8 +185,8 @@ var open_all_strings: ct.TokenConstructor[] = [
 
 var atomic_literals: ct.TokenConstructor[] = [
   DateTime,
-  Integer,
   Float,
+  Integer,
   Booolean,
 ]
 
