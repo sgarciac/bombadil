@@ -283,8 +283,5 @@ var modes: ct.IMultiModeLexerDefinition = {
   defaultMode: "top"
 }
 
-var myLexer = new ct.Lexer(modes);
+export var tomlLexer = new ct.Lexer(modes);
 
-export function tokenize(input) {
-  return myLexer.tokenize(input);
-}
