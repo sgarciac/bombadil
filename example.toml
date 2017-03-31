@@ -1,11 +1,2 @@
-
-[1.b.c]   a = 1
-'b' = 2
-c = "mis amigos son mis amigos"
-"d" = '''
-y no los amigos
-de 
-  los 
-     demas'''
-sergio = [1,2,3]
-amigo = {a=1,'b'=[1,2,3]}
+birth = 1990-12-31T23:59:60Z
+ttt = 2

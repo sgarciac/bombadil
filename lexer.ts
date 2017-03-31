@@ -9,6 +9,7 @@ export class Identifier extends ct.Token {
   static PATTERN = /[A-Za-z0-9_-]+/;
 }
 
+// ATOMIC VALUES
 export class Integer extends ct.Token {
   static PATTERN = /[+-]?(\d_|_\d|\d)+/;
 }
@@ -17,6 +18,15 @@ export class Float extends ct.Token {
   static PATTERN = /([+-]?(\d_|_\d|\d)+)(((\.(\d_|_\d|\d)+)([Ee]([+-])?(\d_|_\d|\d)+))|((\.(\d_|_\d|\d)+)|([Ee]([+-])?(\d_|_\d|\d)+)))/;
 }
 
+export class Booolean extends ct.Token {
+  static PATTERN = /true|false/;
+}
+
+export class DateTime extends ct.Token {
+  static PATTERN = /(((-?\d{4})-(\d{2})-(\d{2}))((t|\s)(\d{2}):(\d{2}):(\d{2}(\.\d+)?))?(z|[-+]\d{2}:\d{2})?)|((\d{2}):(\d{2}):(\d{2}(\.\d+)?)(z|[-+]\d{2}:\d{2})?)/i
+}
+
+//
 export class EndOfLine extends ct.Token {
   static PATTERN = /\n+/;
   static GROUP = ct.Lexer.SKIPPED;
@@ -45,7 +55,7 @@ export class OpenInnerTable extends ct.Token {
 }
 
 export class CloseInnerTable extends ct.Token {
-  static PATTERN = /\n+/;
+  static PATTERN = /\}/;
   static POP_MODE = true;
 }
 
@@ -55,7 +65,8 @@ export class OpenInnerValue extends ct.Token {
 }
 
 export class CloseInnerValue extends ct.Token {
-  static PATTERN = /[,\}]/;
+  // hackish way to use } as end of value without consuming it
+  static PATTERN = /,|(.{0}(?=}))/;
   static POP_MODE = true;
 }
 
@@ -136,10 +147,6 @@ export class MultiLineLiteralString extends ct.Token {
   static PATTERN = /([^']|'(?!''))+/;
 }
 
-export class Booolean extends ct.Token {
-  static PATTERN = /true|false/;
-}
-
 export class OpenArray extends ct.Token {
   static PATTERN = /\[/;
   static PUSH_MODE = "array";
@@ -156,9 +163,20 @@ export class OpenTable extends ct.Token {
 }
 
 export class CloseTable extends ct.Token {
-  static PATTERN = /\]/;
+  static PATTERN = /\][^\S\n]*\n/;
   static POP_MODE = true;
 }
+
+export class OpenTableArrayItem extends ct.Token {
+  static PATTERN = /\[\[/;
+  static PUSH_MODE = "table_array_item";
+}
+
+export class CloseTableArrayItem extends ct.Token {
+  static PATTERN = /\]\][^\S\n]*/;
+  static POP_MODE = true;
+}
+
 
 var open_all_strings: ct.TokenConstructor[] = [
   OpenMultiLineBasicString,
@@ -166,7 +184,8 @@ var open_all_strings: ct.TokenConstructor[] = [
   OpenBasicString,
   OpenLiteralString];
 
-var primitive_literals: ct.TokenConstructor[] = [
+var atomic_literals: ct.TokenConstructor[] = [
+  DateTime,
   Integer,
   Float,
   Booolean,
@@ -191,6 +210,7 @@ var all_skipped: ct.TokenConstructor[] = [
 var modes: ct.IMultiModeLexerDefinition = {
   modes: {
     top: [
+      OpenTableArrayItem,
       OpenTable,
       Identifier,
       ...open_identifier_strings,
@@ -199,7 +219,7 @@ var modes: ct.IMultiModeLexerDefinition = {
     ],
     value: [
       ...open_all_strings,
-      ...primitive_literals,
+      ...atomic_literals,
       ...single_line_skipped,
       OpenArray,
       OpenInnerTable,
@@ -213,8 +233,16 @@ var modes: ct.IMultiModeLexerDefinition = {
       CloseTable
     ]
     ,
+    table_array_item: [
+      Identifier,
+      ...open_identifier_strings,
+      Dot,
+      WhiteSpace,
+      CloseTableArrayItem
+    ]
+    ,
     array: [
-      ...primitive_literals,
+      ...atomic_literals,
       ...all_skipped,
       ...open_all_strings,
       Comma,
@@ -230,24 +258,28 @@ var modes: ct.IMultiModeLexerDefinition = {
     ],
     inner_value: [
       ...open_all_strings,
-      ...primitive_literals,
+      ...atomic_literals,
       ...single_line_skipped,
       OpenArray,
       OpenInnerTable,
       CloseInnerValue
     ],
-    basic_string: [CloseBasicString,
+    basic_string: [
+      CloseBasicString,
       EscapedChar,
       EscapedUnicode,
       SubBasicString],
-    multi_line_basic_string: [CloseMultiLineBasicString,
+    multi_line_basic_string: [
+      CloseMultiLineBasicString,
       EscapedChar,
       EscapedUnicode,
       MultiLineIgnorableSubstring,
       SubMultiLineBasicString],
     literal_string: [LiteralString,
       CloseLiteralString],
-    multi_line_literal_string: [MultiLineLiteralString, CloseMultiLineLiteralString]
+    multi_line_literal_string: [
+      MultiLineLiteralString,
+      CloseMultiLineLiteralString]
   },
   defaultMode: "top"
 }
