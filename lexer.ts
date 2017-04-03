@@ -285,3 +285,13 @@ var modes: ct.IMultiModeLexerDefinition = {
 
 export var tomlLexer = new ct.Lexer(modes);
 
+// hack to export all tokens, 
+// this must be after creating the lexer
+export var allTokens = [];
+for(let symbol in this){
+  if(this[symbol].tokenType){
+    allTokens.push(this[symbol]);
+  }
+}
+
+

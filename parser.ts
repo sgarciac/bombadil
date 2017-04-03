@@ -1,19 +1,28 @@
 import ct = require('chevrotain');
 import * as l from "./lexer";
 
-class TomlParser extends ct.Parser {
+export class TomlParser extends ct.Parser {
     
-    constructor(input:ct.Token[], constructors) {
+    public literalString;
+    public identifier;
+
+    constructor(input, constructors) {
         super(input, constructors);
         let $ = this;
-        $.RULE("selectStatement", () => {
-          $.SUBRULE($.selectClause)
-          $.SUBRULE($.fromClause)
-          $.OPTION(() => {
-             $.SUBRULE($.whereClause)        
-         })
+        
+        this.literalString = $.RULE("literalString", () => {
+            $.CONSUME(l.OpenLiteralString);
+            $.OPTION(() => {$.CONSUME(l.LiteralString)});
+            $.CONSUME(l.CloseLiteralString);
+        });
+
+        $.RULE("bareKeyword", () => {$.CONSUME(l.Identifier)});
+        
+        this.identifier = $.RULE("identifier", () => {
+          $.OR([
+            {ALT: () => {$.CONSUME(l.Identifier)}},
+            {ALT: () => {$.SUBRULE(this.literalString)}}]);})
          
-         ct.Parser.performSelfAnalysis(this)
-       })
-    }   
+        ct.Parser.performSelfAnalysis(this);
+    }
 }
