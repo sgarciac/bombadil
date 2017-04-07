@@ -22,5 +22,4 @@ function parseInput(text) {
    }
 }
 
-let inputText = '[a.e.i..]\n'
-parseInput(inputText)
+parseInput(example_text);

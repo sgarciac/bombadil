@@ -48,23 +48,23 @@ export class CloseValue extends ct.Token {
   static POP_MODE = true;
 }
 
-// The inner value mode
-export class OpenInnerTable extends ct.Token {
+// The inline value mode
+export class OpenInlineTable extends ct.Token {
   static PATTERN = /\{/;
-  static PUSH_MODE = "inner_table"
+  static PUSH_MODE = "inline_table"
 }
 
-export class CloseInnerTable extends ct.Token {
+export class CloseInlineTable extends ct.Token {
   static PATTERN = /\}/;
   static POP_MODE = true;
 }
 
-export class OpenInnerValue extends ct.Token {
+export class OpenInlineValue extends ct.Token {
   static PATTERN = /=/;
-  static PUSH_MODE = "inner_value"
+  static PUSH_MODE = "inline_value"
 }
 
-export class CloseInnerValue extends ct.Token {
+export class CloseInlineValue extends ct.Token {
   // hackish way to use } as end of value without consuming it
   static PATTERN = /,|(.{0}(?=}))/;
   static POP_MODE = true;
@@ -136,6 +136,7 @@ export class SubMultiLineBasicString extends ct.Token {
 
 export class MultiLineIgnorableSubstring extends ct.Token {
   static PATTERN = /\\\s*\n\s*/;
+  static GROUP = ct.Lexer.SKIPPED;
 }
 
 export class LiteralString extends ct.Token {
@@ -221,7 +222,7 @@ var modes: ct.IMultiModeLexerDefinition = {
       ...atomic_literals,
       ...single_line_skipped,
       OpenArray,
-      OpenInnerTable,
+      OpenInlineTable,
       CloseValue
     ],
     table: [
@@ -248,20 +249,20 @@ var modes: ct.IMultiModeLexerDefinition = {
       OpenArray,
       CloseArray
     ],
-    inner_table: [
+    inline_table: [
       Identifier,
       ...open_identifier_strings,
       ...single_line_skipped,
-      OpenInnerValue,
-      CloseInnerTable
+      OpenInlineValue,
+      CloseInlineTable
     ],
-    inner_value: [
+    inline_value: [
       ...open_all_strings,
       ...atomic_literals,
       ...single_line_skipped,
       OpenArray,
-      OpenInnerTable,
-      CloseInnerValue
+      OpenInlineTable,
+      CloseInlineValue
     ],
     basic_string: [
       CloseBasicString,
