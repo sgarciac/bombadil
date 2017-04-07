@@ -1,9 +1,9 @@
-import {TokenConstructor, Token} from "chevrotain";
+import {TokenConstructor, Token} from 'chevrotain';
 import * as toml_lexer from './lexer';
 import * as toml_parser from './parser';
 import fs = require('fs');
 
-let example_text = fs.readFileSync("example.toml").toString();
+let example_text = fs.readFileSync('example.toml').toString();
 
 
 //console.log(result.errors);
@@ -15,12 +15,12 @@ function parseInput(text) {
    console.log(result.errors);
    
    let parser = new toml_parser.TomlParser(result.tokens, toml_lexer.allTokens);
-   parser.identifier();
+   parser.documentRule();
 
    if (parser.errors.length > 0) {
-      console.log("sad sad panda, Parsing errors detected "+parser.errors);
+      console.log('sad sad panda, Parsing errors detected '+parser.errors);
    }
 }
 
-let inputText = "ab+le2"
+let inputText = '[a.e.i..]\n'
 parseInput(inputText)
