@@ -51,7 +51,7 @@ point = { x = 1, y = 2 }
 # There are four ways to express strings: basic, multi-line basic, literal, and
 # multi-line literal. All strings must contain only valid UTF-8 characters.
 
-[string.basic]
+[string."bas\nic"]
 
 basic = "I'm a string. \"You can quote me\". Name\tJos\u00E9\nLocation\tSF."
 
@@ -235,7 +235,7 @@ color = "gray"
   [[fruit.variety]]
     name = "granny smith"
 
-[[fruit]]
+[['sergio']]
   name = "banana"
 
   [[fruit.variety]]

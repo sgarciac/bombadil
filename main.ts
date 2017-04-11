@@ -11,11 +11,11 @@ let example_text = fs.readFileSync('example.toml').toString();
 
 function parseInput(text) {
    let result = toml_lexer.tomlLexer.tokenize(text); 
-   console.log(result.tokens);
-   console.log(result.errors);
+   //console.log(result.tokens);
+   console.log("lexer errors: " + result.errors);
    
    let parser = new toml_parser.TomlParser(result.tokens, toml_lexer.allTokens);
-   parser.documentRule();
+   console.log(parser.documentRule());
 
    if (parser.errors.length > 0) {
       console.log('sad sad panda, Parsing errors detected '+parser.errors);
