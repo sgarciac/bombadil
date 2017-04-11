@@ -10,5 +10,6 @@
   "dependencies": {
     "@types/node": "^7.0.11",
     "chevrotain": "^0.25.1"
-  }
+  },
+  "devDependencies": {}
 }

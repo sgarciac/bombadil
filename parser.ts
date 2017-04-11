@@ -1,5 +1,6 @@
 import ct = require('chevrotain');
 import * as l from "./lexer";
+import fcp from "./fcp";
 
 export class TomlTableHeader {
     constructor(public headers: string[]){
@@ -32,7 +33,7 @@ export class TomlParser extends ct.Parser {
     private unicodeToString(unicode) : string {
         let size = (unicode[1] == "u") ? 4 : 6;
         let codeString = unicode.substr(2,1 + size);
-        return String.fromCodePoint(parseInt(codeString, 16));
+        return fcp([parseInt(codeString, 16)]);
     }
 
     public documentRule = this.RULE('documentRule',() => {
