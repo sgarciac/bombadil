@@ -1,6 +1,6 @@
 import ct = require('chevrotain');
 import * as l from "./lexer";
-import * as tools from "./fcp";
+import * as tools from "./tools";
 
 export class TomlTableHeader {
     constructor(public headers: string[]){
