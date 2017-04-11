@@ -1,6 +1,6 @@
 import ct = require('chevrotain');
 import * as l from "./lexer";
-import fcp from "./fcp";
+import * as tools from "./fcp";
 
 export class TomlTableHeader {
     constructor(public headers: string[]){
@@ -8,33 +8,6 @@ export class TomlTableHeader {
 }
 
 export class TomlParser extends ct.Parser {
-
-    private escapedToString(escaped) : string {
-        switch(escaped) {
-            case "\\n":
-                return "\n";
-            case "\\r":
-                return "\r";
-            case "\\\\":
-                return "\\"
-            case "\\\"":
-                return "\"";
-            case "\\b":
-                return "\b";
-            case "\\t":
-                return "\t";
-            case "\\f":
-                return "\f";
-            default:
-                throw "unrecognised escaped char";
-        }
-    }
-
-    private unicodeToString(unicode) : string {
-        let size = (unicode[1] == "u") ? 4 : 6;
-        let codeString = unicode.substr(2,1 + size);
-        return fcp([parseInt(codeString, 16)]);
-    }
 
     public documentRule = this.RULE('documentRule',() => {
         let documentEntries = [];
@@ -127,8 +100,8 @@ export class TomlParser extends ct.Parser {
         this.CONSUME(l.OpenBasicString);
         this.MANY(()=>{
             this.OR([
-                {ALT: () => {basicString += this.escapedToString(this.CONSUME(l.EscapedChar).image)}},
-                {ALT: () => {basicString += this.unicodeToString(this.CONSUME(l.EscapedUnicode).image)}},
+                {ALT: () => {basicString += tools.escapedToString(this.CONSUME(l.EscapedChar).image)}},
+                {ALT: () => {basicString += tools.unicodeToString(this.CONSUME(l.EscapedUnicode).image)}},
                 {ALT: () => {basicString += this.CONSUME(l.SubBasicString).image}}
             ])
         });
