@@ -22,6 +22,10 @@ export function unicodeToString(unicode) : string {
         return fromCodePoint([parseInt(codeString, 16)]);
 }
 
+export function cleanNumberImage(image : string) : string {
+    return image.replace("_","");
+}
+
 export function escapedToString(escaped : string) : string {
         switch(escaped) {
             case "\\n":
