@@ -28,12 +28,12 @@ export class DateTime extends ct.Token {
 
 //
 export class EndOfLine extends ct.Token {
-  static PATTERN = /\n+/;
+  static PATTERN = /(\r\n|\n)+/;
   static GROUP = ct.Lexer.SKIPPED;
 }
 
 export class WhiteSpace extends ct.Token {
-  static PATTERN = /[^\S\n]+/;
+  static PATTERN = /[^\S\n\r]+/;
   static GROUP = ct.Lexer.SKIPPED;
 }
 
@@ -44,7 +44,7 @@ export class OpenValue extends ct.Token {
 }
 
 export class CloseValue extends ct.Token {
-  static PATTERN = /\n+/;
+  static PATTERN = /(\r\n|\n)+/;
   static POP_MODE = true;
 }
 
@@ -135,7 +135,7 @@ export class SubMultiLineBasicString extends ct.Token {
 }
 
 export class MultiLineIgnorableSubstring extends ct.Token {
-  static PATTERN = /\\\s*\n\s*/;
+  static PATTERN = /\\\s*(\r\n|\n)\s*/;
   static GROUP = ct.Lexer.SKIPPED;
 }
 
@@ -163,7 +163,7 @@ export class OpenTable extends ct.Token {
 }
 
 export class CloseTable extends ct.Token {
-  static PATTERN = /\]((([^\S\n]*#.*)|[^\S\n]*)\n)/;
+  static PATTERN = /\]((([^\S\n\r]*#.*)|[^\S\n\r]*)(\r\n|\n))/;
   static POP_MODE = true;
 }
 
@@ -173,7 +173,7 @@ export class OpenTableArrayItem extends ct.Token {
 }
 
 export class CloseTableArrayItem extends ct.Token {
-  static PATTERN = /\]\][^\S\n]*/;
+  static PATTERN = /\]\][^\S\n\r]*/;
   static POP_MODE = true;
 }
 
@@ -289,8 +289,8 @@ export var tomlLexer = new ct.Lexer(modes);
 // hack to export all tokens, 
 // this must be after creating the lexer
 export var allTokens = [];
-for(let symbol in this){
-  if(this[symbol].tokenType){
+for (let symbol in this) {
+  if (this[symbol].tokenType) {
     allTokens.push(this[symbol]);
   }
 }
