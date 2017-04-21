@@ -1,5 +1,3 @@
-import moment = require('moment');
-
 function fromCodePoint(codePoint) {
     let codeUnits = [];
     let highSurrogate;
@@ -59,8 +57,4 @@ export function escapedToString(escaped: string): string {
         default:
             throw "unrecognised escaped char";
     }
-}
-
-export function parseDateTime(string) {
-    return moment(string).toDate();
 }

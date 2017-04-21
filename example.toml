@@ -235,7 +235,7 @@ color = "gray"
   [[fruit.variety]]
     name = "granny smith"
 
-[['sergio']]
+[["sergio"]]
   name = "banana"
 
   [[fruit.variety]]

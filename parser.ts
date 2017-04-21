@@ -13,6 +13,11 @@ export class TomlKeyValue { constructor(public key: string, public value: any) {
 export class TomlInlineTable { constructor(public bindings: TomlKeyValue[]) { } }
 export class TomlArray { constructor(public contents: any[]) { } }
 
+export class TomlOffsetDateTime { constructor(public offsetDateTime : string) {}}
+export class TomlLocalDateTime { constructor(public localDateTime : string) {}}
+export class TomlLocalDate { constructor(public localDate : string) {}}
+export class TomlLocalTime { constructor(public localTime : string) {}}
+
 export class TomlParser extends ct.Parser {
 
     public documentRule = this.RULE('documentRule', () => {
@@ -43,7 +48,11 @@ export class TomlParser extends ct.Parser {
             // Atomic values
             { ALT: () => { value = Number(tools.cleanNumberImage(this.CONSUME(l.Float).image)) } },
             { ALT: () => { value = Number(tools.cleanNumberImage(this.CONSUME(l.Integer).image)) } },
-            { ALT: () => { value = tools.parseDateTime(this.CONSUME(l.DateTime).image) } },
+            { ALT: () => { value = new TomlOffsetDateTime(this.CONSUME(l.OffsetDateTime).image) } },
+            { ALT: () => { value = new TomlLocalDateTime(this.CONSUME(l.LocalDateTime).image) } },
+            { ALT: () => { value = new TomlLocalDate(this.CONSUME(l.LocalDate).image) } },
+            { ALT: () => { value = new TomlLocalTime(this.CONSUME(l.LocalTime).image) } },
+            
             { ALT: () => { value = this.CONSUME(l.Booolean).image } },
             // structures
             { ALT: () => { value = this.SUBRULE(this.arrayRule) } },

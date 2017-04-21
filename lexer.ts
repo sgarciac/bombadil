@@ -22,8 +22,20 @@ export class Booolean extends ct.Token {
   static PATTERN = /true|false/;
 }
 
-export class DateTime extends ct.Token {
-  static PATTERN = /(((-?\d{4})-(\d{2})-(\d{2}))((t|\s)(\d{2}):(\d{2}):(\d{2}(\.\d+)?))?(z|[-+]\d{2}:\d{2})?)|((\d{2}):(\d{2}):(\d{2}(\.\d+)?)(z|[-+]\d{2}:\d{2})?)/i
+export class OffsetDateTime extends ct.Token {
+  static PATTERN = /-?\d{4}-\d{2}-\d{2}(t|\s)\d{2}:\d{2}:\d{2}(\.\d+)?(z|([-+]\d{2}:\d{2}))/i
+}
+
+export class LocalDateTime extends ct.Token {
+  static PATTERN = /-?\d{4}-\d{2}-\d{2}(t|\s)\d{2}:\d{2}:\d{2}(\.\d+)?/i
+}
+
+export class LocalDate extends ct.Token {
+  static PATTERN = /-?\d{4}-\d{2}-\d{2}/i
+}
+
+export class LocalTime extends ct.Token {
+  static PATTERN = /\d{2}:\d{2}:\d{2}(\.\d+)?/i
 }
 
 //
@@ -185,7 +197,10 @@ var open_all_strings: ct.TokenConstructor[] = [
   OpenLiteralString];
 
 var atomic_literals: ct.TokenConstructor[] = [
-  DateTime,
+  OffsetDateTime,
+  LocalDateTime,
+  LocalDate,
+  LocalTime,
   Float,
   Integer,
   Booolean,
@@ -247,6 +262,7 @@ var modes: ct.IMultiModeLexerDefinition = {
       ...open_all_strings,
       Comma,
       OpenArray,
+      OpenInlineTable,
       CloseArray
     ],
     inline_table: [

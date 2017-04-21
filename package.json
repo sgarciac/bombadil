@@ -8,11 +8,9 @@
   "author": "sergio <sergio.garcia@gmail.com>",
   "license": "Artistic-2.0",
   "dependencies": {
-    "chevrotain": "^0.25.1",
-    "moment": "^2.18.1"
+    "chevrotain": "^0.25.1"
   },
   "devDependencies": {
-    "@types/moment": "^2.13.0",
     "@types/node": "^7.0.12",
     "webpack": "^2.3.3"
   }
