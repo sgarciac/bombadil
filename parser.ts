@@ -9,19 +9,24 @@ export class TomlTableArrayEntryHeader { constructor(public headers: string[]) {
 // Bindings
 export class TomlKeyValue { constructor(public key: string, public value: any) { } }
 
+// VALUES:
+
 // Structures
 export class TomlInlineTable { constructor(public bindings: TomlKeyValue[]) { } }
 export class TomlArray { constructor(public contents: any[]) { } }
-
+// dates
 export class TomlOffsetDateTime { constructor(public offsetDateTime : string) {}}
 export class TomlLocalDateTime { constructor(public localDateTime : string) {}}
 export class TomlLocalDate { constructor(public localDate : string) {}}
 export class TomlLocalTime { constructor(public localTime : string) {}}
 
+export type TopLevelTomlDocumentEntry = (TomlKeyValue | TomlTableHeader | TomlTableArrayEntryHeader) 
+
+
 export class TomlParser extends ct.Parser {
 
-    public documentRule = this.RULE('documentRule', () => {
-        let documentEntries = [];
+    public documentRule : () => TopLevelTomlDocumentEntry[] = this.RULE('documentRule', () => {
+        let documentEntries : TopLevelTomlDocumentEntry[] = [];
         this.MANY(() => {
             this.OR(
                 [
