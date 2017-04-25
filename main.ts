@@ -21,7 +21,7 @@ function parseInput(text) {
 
    //console.log(entries);
    if (parser.errors.length > 0) {
-      console.log('sad sad panda, Parsing errors detected '+parser.errors);
+      console.log('sad sad panda, Parsing errors detected '+JSON.stringify(parser.errors));
    }
 }
 

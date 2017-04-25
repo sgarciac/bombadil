@@ -1,20 +1,4 @@
-[sergio]
-a = [1,2,3]
-[sergio.arturo.garcia.camargo]
-b = "sergio"
-[sergio.arturo]
+[a]
 b = 1
-[[sergio.checho]]
 b = 2
-[[sergio.checho.angulo]]
-b = 2
-[[sergio.checho]]
-b = 2
-[[sergio.checho.angulo]]
-b = 2
-[[sergio.checho]]
-b = 2
-[[sergio.checho.angulo]]
-b = 2
-
 
