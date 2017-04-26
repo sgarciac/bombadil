@@ -1,5 +1,6 @@
 import * as p from './parser';
-import * as _ from 'lodash';
+import includes = require('lodash.includes')
+import last = require('lodash.last')
 
 type TomlValue = (
 p.TomlOffsetDateTime |
@@ -59,14 +60,14 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
         throw 'Path is already initialized to a non table/table array.';
     } else{
         if(names.length === 1){ // we are at the table being directly initialized
-            if (_.includes(directly_initialized_tables, context)) {
+            if (includes(directly_initialized_tables, context)) {
                 throw 'path is already initialized to a table.';
             } else {
                 if(isTable(context)){ // value is a table, indirectly initialized
                     directly_initialized_tables.push(context);
                     return context;
                 } else if (isTableArray(context)){ // value is a table array
-                    if (_.includes(headers_initialized_table_arrays, context)) {
+                    if (includes(headers_initialized_table_arrays, context)) {
                         throw 'An static inline table has already been initialized for path.'
                     } {
                         let table = {};
@@ -94,7 +95,7 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
             if(isTable(context)){ // value is an existing table
                 return init_table(context, names.slice(1), directly_initialized_tables,headers_initialized_table_arrays, isArray);
             } else if (isTableArray(context)) {
-                return init_table(_.last(context), names.slice(1), directly_initialized_tables, headers_initialized_table_arrays, isArray);
+                return init_table(last(context), names.slice(1), directly_initialized_tables, headers_initialized_table_arrays, isArray);
             }
             else if (context === undefined) { // init a table indirectly
                 context = {};
