@@ -1,6 +1,6 @@
 import ct = require('chevrotain');
-import * as l from "./lexer";
-import * as tools from "./tools";
+import * as l from './lexer';
+import * as tools from './tools';
 
 // Table headers
 export class TomlTableHeader { constructor(public headers: string[]) { } }
@@ -127,7 +127,7 @@ export class TomlParser extends ct.Parser {
     });
 
     basicStringRule = this.RULE('basicStringRule', () => {
-        let basicString: string = "";
+        let basicString: string = '';
         this.CONSUME(l.OpenBasicString);
         this.MANY(() => {
             this.OR([
@@ -149,7 +149,7 @@ export class TomlParser extends ct.Parser {
     });
 
     multiLineBasicStringRule = this.RULE('multiLineBasicStringRule', () => {
-        let multiLineString: string = "";
+        let multiLineString: string = '';
         this.CONSUME(l.OpenMultiLineBasicString);
         this.MANY(() => {
             this.OR([

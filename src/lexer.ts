@@ -1,4 +1,4 @@
-import ct = require("chevrotain")
+import ct = require('chevrotain')
 
 export class OneLineComment extends ct.Token {
   static PATTERN = /#.*/;
@@ -52,7 +52,7 @@ export class WhiteSpace extends ct.Token {
 // The top value mode
 export class OpenValue extends ct.Token {
   static PATTERN = /=/;
-  static PUSH_MODE = "value"
+  static PUSH_MODE = 'value'
 }
 
 export class CloseValue extends ct.Token {
@@ -63,7 +63,7 @@ export class CloseValue extends ct.Token {
 // The inline value mode
 export class OpenInlineTable extends ct.Token {
   static PATTERN = /\{/;
-  static PUSH_MODE = "inline_table"
+  static PUSH_MODE = 'inline_table'
 }
 
 export class CloseInlineTable extends ct.Token {
@@ -73,7 +73,7 @@ export class CloseInlineTable extends ct.Token {
 
 export class OpenInlineValue extends ct.Token {
   static PATTERN = /=/;
-  static PUSH_MODE = "inline_value"
+  static PUSH_MODE = 'inline_value'
 }
 
 export class CloseInlineValue extends ct.Token {
@@ -92,7 +92,7 @@ export class Dot extends ct.Token {
 
 export class OpenMultiLineBasicString extends ct.Token {
   static PATTERN = /"""/;
-  static PUSH_MODE = "multi_line_basic_string";
+  static PUSH_MODE = 'multi_line_basic_string';
 }
 
 export class CloseMultiLineBasicString extends ct.Token {
@@ -102,7 +102,7 @@ export class CloseMultiLineBasicString extends ct.Token {
 
 export class OpenBasicString extends ct.Token {
   static PATTERN = /"/;
-  static PUSH_MODE = "basic_string";
+  static PUSH_MODE = 'basic_string';
 }
 
 export class CloseBasicString extends ct.Token {
@@ -112,7 +112,7 @@ export class CloseBasicString extends ct.Token {
 
 export class OpenLiteralString extends ct.Token {
   static PATTERN = /'/;
-  static PUSH_MODE = "literal_string";
+  static PUSH_MODE = 'literal_string';
 }
 
 export class CloseLiteralString extends ct.Token {
@@ -122,7 +122,7 @@ export class CloseLiteralString extends ct.Token {
 
 export class OpenMultiLineLiteralString extends ct.Token {
   static PATTERN = /'''/;
-  static PUSH_MODE = "multi_line_literal_string";
+  static PUSH_MODE = 'multi_line_literal_string';
 }
 
 export class CloseMultiLineLiteralString extends ct.Token {
@@ -161,7 +161,7 @@ export class MultiLineLiteralString extends ct.Token {
 
 export class OpenArray extends ct.Token {
   static PATTERN = /\[/;
-  static PUSH_MODE = "array";
+  static PUSH_MODE = 'array';
 }
 
 export class CloseArray extends ct.Token {
@@ -171,7 +171,7 @@ export class CloseArray extends ct.Token {
 
 export class OpenTable extends ct.Token {
   static PATTERN = /\[/;
-  static PUSH_MODE = "table";
+  static PUSH_MODE = 'table';
 }
 
 export class CloseTable extends ct.Token {
@@ -181,7 +181,7 @@ export class CloseTable extends ct.Token {
 
 export class OpenTableArrayItem extends ct.Token {
   static PATTERN = /\[\[/;
-  static PUSH_MODE = "table_array_item";
+  static PUSH_MODE = 'table_array_item';
 }
 
 export class CloseTableArrayItem extends ct.Token {
@@ -297,7 +297,7 @@ var modes: ct.IMultiModeLexerDefinition = {
       MultiLineLiteralString,
       CloseMultiLineLiteralString]
   },
-  defaultMode: "top"
+  defaultMode: 'top'
 }
 
 export var tomlLexer = new ct.Lexer(modes);

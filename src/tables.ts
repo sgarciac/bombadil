@@ -56,18 +56,18 @@ export function isTableOrTableArray(obj) : boolean {
 function init_table(parent, names, directly_initialized_tables, headers_initialized_table_arrays, isArray) : object{
     let context = parent[names[0]];
     if ((context != undefined) && !isTableOrTableArray(context)) {
-        throw "Path is already initialized to a non table/table array.";
+        throw 'Path is already initialized to a non table/table array.';
     } else{
         if(names.length === 1){ // we are at the table being directly initialized
             if (_.includes(directly_initialized_tables, context)) {
-                throw "path is already initialized to a table.";
+                throw 'path is already initialized to a table.';
             } else {
                 if(isTable(context)){ // value is a table, indirectly initialized
                     directly_initialized_tables.push(context);
                     return context;
                 } else if (isTableArray(context)){ // value is a table array
                     if (!_.includes(headers_initialized_table_arrays, context)) {
-                        throw "An static inline table has already been initialized for path."
+                        throw 'An static inline table has already been initialized for path.'
                     } {
                         let table = {};
                         context.push(table);
@@ -87,7 +87,7 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
                     directly_initialized_tables.push(context);
                     return context;
                 } else {
-                    throw "unknown type!";
+                    throw 'unknown type!';
                 }
             }
         } else {
@@ -101,7 +101,7 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
                 parent[names[0]] = context;
                 return init_table(context, names.slice(1),directly_initialized_tables, headers_initialized_table_arrays,isArray);
             } else {
-                throw "unknown type!";
+                throw 'unknown type!';
             }
         }
     }

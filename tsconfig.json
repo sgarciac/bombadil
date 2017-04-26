@@ -2,16 +2,12 @@
   "compilerOptions": {
     "target":"es5",
     "module": "commonjs",
-    "declaration": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "outDir": "dist",
+    "declaration": true,
     "sourceMap": true,
     "watch": false
   },
-  "include": ["*.ts"],
   "exclude": [
-    "node_modules"
+    "node_modules","main.ts"
   ],
   "compileOnSave": false,
   "buildOnSave": true,

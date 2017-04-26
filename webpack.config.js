@@ -1,48 +1,39 @@
 var webpack = require('webpack'),
-    path = require('path'),
-    yargs = require('yargs');
+    path = require('path');
  
-var libraryName = 'MyLib',
-    plugins = [],
-    outputFile;
- 
-if (yargs.argv.p) {
-  plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
-  outputFile = libraryName + '.min.js';
-} else {
-  outputFile = libraryName + '.js';
-}
- 
+var libraryName = 'bombadil';
+    
 var config = {
+  context: path.resolve(__dirname, "src"),
   entry: [
-    __dirname + '/src/TestClass.ts'
+    './bombadil.ts'
   ],
   devtool: 'source-map',
   output: {
     path: path.join(__dirname, '/dist'),
-    filename: outputFile,
+    filename: libraryName + '.js',
     library: libraryName,
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
-  module: {
-    preLoaders: [
-      { test: /\.tsx?$/, loader: 'tslint', exclude: /node_modules/ }
-    ],
-    loaders: [
-      { test: /\.tsx?$/, loader: 'ts', exclude: /node_modules/ }
+ module: {
+    rules: [
+        {
+            enforce: 'pre',
+            test: /\.tsx?$/,
+            use: 'tslint-loader',
+            exclude: [path.resolve(__dirname, "node_modules"),path.resolve(__dirname, "../main.ts")]
+        },
+        {
+            test: /\.tsx?$/,
+            use: 'ts-loader',
+            exclude: [path.resolve(__dirname, "node_modules"),path.resolve(__dirname, "../main.ts")]
+        }
     ]
-  },
+},
   resolve: {
-    root: path.resolve('./src'),
-    extensions: [ '', '.js', '.ts', '.jsx', '.tsx' ]
-  },
-  plugins: plugins,
- 
-  // Individual Plugin Options
-  tslint: {
-    emitErrors: true,
-    failOnHint: true
+    modules: [path.resolve(__dirname, "node_modules")],
+    extensions: [ '.ts', '.js' ]
   }
 };
  

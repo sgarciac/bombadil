@@ -17,13 +17,13 @@ function fromCodePoint(codePoint) {
 }
 
 export function unicodeToString(unicode): string {
-    let size = (unicode[1] == "u") ? 4 : 6;
+    let size = (unicode[1] == 'u') ? 4 : 6;
     let codeString = unicode.substr(2, 1 + size);
     return fromCodePoint([parseInt(codeString, 16)]);
 }
 
 export function cleanNumberImage(image: string): string {
-    return image.replace("_", "");
+    return image.replace('_', '');
 }
 
 export function startsWithEOL(string): boolean {
@@ -40,22 +40,22 @@ export function trimWhiteSpacePrefix(string) {
 
 export function escapedToString(escaped: string): string {
     switch (escaped) {
-        case "\\n":
-            return "\n";
-        case "\\r":
-            return "\r";
-        case "\\\\":
-            return "\\"
-        case "\\\"":
-            return "\"";
-        case "\\b":
-            return "\b";
-        case "\\t":
-            return "\t";
-        case "\\f":
-            return "\f";
+        case '\\n':
+            return '\n';
+        case '\\r':
+            return '\r';
+        case '\\\\':
+            return '\\'
+        case '\\\"':
+            return '\"';
+        case '\\b':
+            return '\b';
+        case '\\t':
+            return '\t';
+        case '\\f':
+            return '\f';
         default:
-            throw "unrecognised escaped char";
+            throw 'unrecognised escaped char';
     }
 }
 
