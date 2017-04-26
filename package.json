@@ -10,10 +10,14 @@
   "license": "Artistic-2.0",
   "dependencies": {
     "chevrotain": "^0.25.1",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "lodash.includes": "^4.3.0",
+    "lodash.last": "^3.0.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.63",
+    "@types/lodash.includes": "^4.3.2",
+    "@types/lodash.last": "^3.0.2",
     "@types/node": "^7.0.12",
     "ts-loader": "^2.0.3",
     "tslint": "^5.1.0",
