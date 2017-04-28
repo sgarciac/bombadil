@@ -4,10 +4,11 @@
     "module": "commonjs",
     "declaration": true,
     "sourceMap": true,
-    "watch": false
+    "watch": false,
+    "outDir" : "lib"
   },
-  "exclude": [
-    "node_modules","main.ts"
+  "include": [
+    "src"
   ],
   "compileOnSave": false,
   "buildOnSave": true,
