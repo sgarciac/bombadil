@@ -1,6 +1,6 @@
 {
   "name": "@sgarciac/bombadil",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A TOML parser",
   "main": "lib/bombadil",
   "types": "lib/bombadil",
@@ -25,6 +25,7 @@
     "typescript": "^2.2.2"
   },
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "lint": "tslint -c tslint.json 'src/*.ts'"
   }
 }
