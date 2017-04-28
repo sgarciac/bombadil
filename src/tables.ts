@@ -67,7 +67,7 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
                     directly_initialized_tables.push(context);
                     return context;
                 } else if (isTableArray(context)){ // value is a table array
-                    if (includes(headers_initialized_table_arrays, context)) {
+                    if (!includes(headers_initialized_table_arrays, context)) {
                         throw 'An static inline table has already been initialized for path.'
                     } {
                         let table = {};
