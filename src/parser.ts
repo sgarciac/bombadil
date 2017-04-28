@@ -3,11 +3,11 @@ import * as l from './lexer';
 import * as tools from './tools';
 
 // Table headers
-export class TomlTableHeader { constructor(public headers: string[]) { } }
-export class TomlTableArrayEntryHeader { constructor(public headers: string[]) { } }
+export class TomlTableHeader { constructor(public headers: string[], public token: ct.ISimpleTokenOrIToken) { } }
+export class TomlTableArrayEntryHeader { constructor(public headers: string[], public token: ct.ISimpleTokenOrIToken) { } }
 
 // Bindings
-export class TomlKeyValue { constructor(public key: string, public value: any) { } }
+export class TomlKeyValue { constructor(public key: string, public value: any, public token: ct.ISimpleTokenOrIToken) { } }
 
 // VALUES:
 
@@ -41,10 +41,10 @@ export class TomlParser extends ct.Parser {
 
     keyValueRule = this.RULE('keyValueRule', () => {
         let keyword = this.SUBRULE(this.identifierRule);
-        this.CONSUME(l.OpenValue);
+        let equals = this.CONSUME(l.OpenValue);
         let value = this.SUBRULE(this.valueRule);
         this.CONSUME(l.CloseValue);
-        return new TomlKeyValue(keyword, value);
+        return new TomlKeyValue(keyword, value, equals);
     })
 
     valueRule = this.RULE('valueRule', () => {
@@ -92,10 +92,10 @@ export class TomlParser extends ct.Parser {
         this.CONSUME(l.OpenInlineTable);
         this.MANY(() => {
             let identifier = this.SUBRULE(this.identifierRule);
-            this.CONSUME(l.OpenInlineValue);
+            let equals = this.CONSUME(l.OpenInlineValue);
             let value = this.SUBRULE(this.valueRule);
             this.CONSUME(l.CloseInlineValue);
-            bindings.push(new TomlKeyValue(identifier, value));
+            bindings.push(new TomlKeyValue(identifier, value, equals));
         });
         this.CONSUME(l.CloseInlineTable);
         return new TomlInlineTable(bindings);
@@ -104,26 +104,26 @@ export class TomlParser extends ct.Parser {
 
     tableHeaderRule = this.RULE('tableHeaderRule', () => {
         let headers = [];
-        this.CONSUME(l.OpenTable);
+        let open_table = this.CONSUME(l.OpenTable);
         this.AT_LEAST_ONE_SEP({
             SEP: l.Dot, DEF: () => {
                 headers.push(this.SUBRULE(this.identifierRule));
             }
         });
         this.CONSUME(l.CloseTable);
-        return new TomlTableHeader(headers);
+        return new TomlTableHeader(headers, open_table);
     });
 
     tableArrayEntryHeaderRule = this.RULE('tableArrayEntryHeaderRule', () => {
         let headers = [];
-        this.CONSUME(l.OpenTableArrayItem);
+        let open_table = this.CONSUME(l.OpenTableArrayItem);
         this.AT_LEAST_ONE_SEP({
             SEP: l.Dot, DEF: () => {
                 headers.push(this.SUBRULE(this.identifierRule));
             }
         });
         this.CONSUME(l.CloseTableArrayItem);
-        return new TomlTableArrayEntryHeader(headers);
+        return new TomlTableArrayEntryHeader(headers, open_table);
     });
 
     basicStringRule = this.RULE('basicStringRule', () => {
