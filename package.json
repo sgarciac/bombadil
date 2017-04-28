@@ -2,9 +2,11 @@
   "name": "bombadil",
   "version": "0.0.1",
   "description": "A TOML parser",
-  "main": "dist/bombadil",
+  "main": "lib/bombadil",
+  "types": "lib/bombadil",
   "keywords": [
-    "toml"
+    "toml",
+    "parser"
   ],
   "author": "sergio <sergio.garcia@gmail.com>",
   "license": "Artistic-2.0",
@@ -20,11 +22,10 @@
     "ts-loader": "^2.0.3",
     "tslint": "^5.1.0",
     "tslint-loader": "^3.5.3",
-    "typescript": "^2.2.2",
-    "webpack": "^2.4.1",
-    "yargs": "^7.1.0"
+    "typescript": "^2.2.2"
   },
   "scripts": {
-    "build": "webpack --config webpack.config.js"
+    "pack": "webpack",
+    "build": "tsc -p ."
   }
 }
