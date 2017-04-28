@@ -1,5 +1,5 @@
 {
-  "name": "bombadil",
+  "name": "@sgarciac/bombadil",
   "version": "0.0.1",
   "description": "A TOML parser",
   "main": "lib/bombadil",

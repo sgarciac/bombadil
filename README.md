@@ -1,2 +1,4 @@
 # bombadil
-TOML parser in typescript
+Copyright Sergio Garcia
+
+TOML parser in typescript 
