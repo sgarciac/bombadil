@@ -26,6 +26,7 @@ export class TomlReader {
     errors: TomlError[];
 
     public readToml(input:string){
+        input = input + "\n";
         this.errors = [];
         let lexer_result = l.tomlLexer.tokenize(input);
         if (lexer_result.errors.length > 0){
