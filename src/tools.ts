@@ -1,3 +1,5 @@
+import moment = require('moment');
+
 function fromCodePoint(codePoint) {
     let codeUnits = [];
     let highSurrogate;
@@ -16,13 +18,8 @@ function fromCodePoint(codePoint) {
     return String.fromCharCode.apply(null, codeUnits);
 }
 
-export function unicodeToString(unicode): string {
-    let size = (unicode[1] == 'u') ? 4 : 6;
-    let codeString = unicode.substr(2, 1 + size);
-    return fromCodePoint([parseInt(codeString, 16)]);
-}
 
-export function cleanNumberImage(image: string): string {
+function cleanNumberImage(image: string): string {
     return image.replace('_', '');
 }
 
@@ -38,7 +35,30 @@ export function trimWhiteSpacePrefix(string) {
     }
 }
 
-export function escapedToString(escaped: string): string {
+// Parsing of TOML values
+export function parseNumber(image : string){
+    return Number(cleanNumberImage(image));
+}
+
+export function parseBoolean(image : string){
+    return (image[0] === 't') ? true : false;
+}
+
+export function parseDateTime(image: string){
+    return moment(image).toDate();
+}
+
+export function parseTime(image: string){
+    return moment('0000-00-00T'+image).toDate();
+}
+
+export function parseEscapedUnicode(unicode): string {
+    let size = (unicode[1] == 'u') ? 4 : 6;
+    let codeString = unicode.substr(2, 1 + size);
+    return fromCodePoint([parseInt(codeString, 16)]);
+}
+
+export function parseEscapedCharacter(escaped: string): string {
     switch (escaped) {
         case '\\n':
             return '\n';
@@ -58,4 +78,3 @@ export function escapedToString(escaped: string): string {
             throw 'unrecognised escaped char';
     }
 }
-

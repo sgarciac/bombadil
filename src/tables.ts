@@ -5,12 +5,7 @@ import includes = require('lodash.includes')
 import last = require('lodash.last')
 
 type TomlValue = (
-p.TomlOffsetDateTime |
-p.TomlLocalDateTime |
-p.TomlLocalDate |
-p.TomlLocalTime |
-string |
-number |
+p.TomlAtomicValue |
 p.TomlInlineTable |
 p.TomlArray);
 
@@ -24,8 +19,8 @@ export type TomlError = ct.ILexingError | ct.exceptions.IRecognitionException | 
 export class TomlReader {
     result: any;
     errors: TomlError[];
-
-    public readToml(input:string){
+    
+    public readToml(input:string, full_value: boolean = false){
         input = input + "\n";
         this.errors = [];
         let lexer_result = l.tomlLexer.tokenize(input);
@@ -41,7 +36,7 @@ export class TomlReader {
             this.result = undefined;
             return;
         }
-        this.result = load_toml_document(entries, this.errors);
+        this.result = load_toml_document(entries, this.errors, full_value);
     }
 }
 
@@ -51,10 +46,11 @@ export class TomlReader {
 * 
 * @param entries the result of a Toml Parser Document Rule
 * @param toml_exceptions an array that will be filled with toml exceptions, if they occur
+* @param full_value whether to return full meta-data for atomic values or not
 * @return an javascript object representing the toml document
 */
 
-function load_toml_document(entries: p.TopLevelTomlDocumentEntry[], toml_exceptions: TomlError[]) {
+function load_toml_document(entries: p.TopLevelTomlDocumentEntry[], toml_exceptions: TomlError[], full_value : boolean) {
     let root = {};
     // keeps the tables that have been directly defined
     let directly_initialized_tables = [];
@@ -63,7 +59,7 @@ function load_toml_document(entries: p.TopLevelTomlDocumentEntry[], toml_excepti
     let current = root;
     for (let entry of entries) {
         if (entry instanceof p.TomlKeyValue) {
-            processKeyValue(entry, current, directly_initialized_tables, toml_exceptions, entry.token);
+            processKeyValue(entry, current, directly_initialized_tables, toml_exceptions, entry.token, full_value);
         } else if (entry instanceof p.TomlTableHeader){
             current = init_table(root, entry.headers, directly_initialized_tables, headers_initialized_table_arrays, false, toml_exceptions, entry.token);
         } else if (entry instanceof p.TomlTableArrayEntryHeader){
@@ -148,16 +144,16 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
 * @param kv the key-value pair
 * @param current the current context
 */
-function processKeyValue(kv: p.TomlKeyValue, current: object, directly_initialized_tables: any[], toml_exceptions, parser_token: ct.ISimpleTokenOrIToken) {
-    let value = tomlValueToObject(kv.value);
+function processKeyValue(kv: p.TomlKeyValue, current: object, directly_initialized_tables: any[], toml_exceptions, parser_token: ct.ISimpleTokenOrIToken, full_value) {
+    let value = tomlValueToObject(kv.value, full_value);
     if (current[kv.key] != undefined) {
         // can we statically define a table that has been implicitely defined?
         toml_exceptions.push({message: "Path has already been initialized to some value", token: parser_token});
     } else {
-    current[kv.key] = value;
-    if(isTable(value)){
-        directly_initialized_tables.push(value);
-    }    
+        current[kv.key] = value;
+        if(isTable(value)){
+            directly_initialized_tables.push(value);
+        }    
     }
 }
 
@@ -165,23 +161,17 @@ function processKeyValue(kv: p.TomlKeyValue, current: object, directly_initializ
 * Returns a toml value transformed to a simple JSON object (a string, a number, an array or an object)
 * @param value the toml value
 */
-function tomlValueToObject(value: TomlValue){
-    if(typeof value === 'string') {
-        return value;
-    }
-    if(typeof value === 'number') {
-        return value;
-    }
-    if(value instanceof p.TomlOffsetDateTime){
-        return value;
+function tomlValueToObject(value: TomlValue, full_value : boolean){
+    if(value instanceof p.TomlAtomicValue){
+        return full_value ? value : value.value;
     }
     if(value instanceof p.TomlArray){
-        return value.contents.map(tomlValueToObject);
+        return value.contents.map(item => tomlValueToObject(item, full_value));
     }
     if(value instanceof p.TomlInlineTable){
         let newObject = {};
         for(let kv of value.bindings){
-            newObject[kv.key] = tomlValueToObject(kv.value);
+            newObject[kv.key] = tomlValueToObject(kv.value, full_value);
         }
         return newObject;
     }
