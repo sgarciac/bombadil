@@ -23,7 +23,8 @@ export class TomlReader {
     public readToml(input:string, full_value: boolean = false){
         input = input + "\n";
         this.errors = [];
-        let lexer_result = l.tomlLexer.tokenize(input);
+        // Our lexer assumes a toml file always ends in \n
+        let lexer_result = l.tomlLexer.tokenize(input + '\n');
         if (lexer_result.errors.length > 0){
             this.errors = lexer_result.errors;
             this.result = undefined;
