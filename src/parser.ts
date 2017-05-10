@@ -60,10 +60,10 @@ export class TomlParser extends ct.Parser {
             { ALT: () => { let image = this.CONSUME(l.Float).image; value = new TomlAtomicValue(TomlAtomicValueType.Float, image, tools.parseNumber(image)) } },
             { ALT: () => { let image = this.CONSUME(l.Integer).image; value = new TomlAtomicValue(TomlAtomicValueType.Integer, image, tools.parseNumber(image)) } },
             { ALT: () => { let image = this.CONSUME(l.Booolean).image; value = new TomlAtomicValue(TomlAtomicValueType.Boolean, image, tools.parseBoolean(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.OffsetDateTime).image; value = new TomlAtomicValue(TomlAtomicValueType.OffsetDateTime, image, tools.parseDateTime(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.LocalDateTime).image; value = new TomlAtomicValue(TomlAtomicValueType.LocalDateTime, image, tools.parseDateTime(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.LocalDate).image; value = new TomlAtomicValue(TomlAtomicValueType.LocalDate, image, tools.parseDateTime(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.LocalTime).image; value = new TomlAtomicValue(TomlAtomicValueType.LocalTime, image, tools.parseTime(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.OffsetDateTime).image; value = new TomlAtomicValue(TomlAtomicValueType.OffsetDateTime, image, tools.parseOffetDateTime(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.LocalDateTime).image; value = new TomlAtomicValue(TomlAtomicValueType.LocalDateTime, image, tools.parseLocalDateTime(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.LocalDate).image; value = new TomlAtomicValue(TomlAtomicValueType.LocalDate, image, tools.parseLocalDate(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.LocalTime).image; value = new TomlAtomicValue(TomlAtomicValueType.LocalTime, image, tools.parseLocalTime(image)) } },
 
             // structures
             { ALT: () => { value = this.SUBRULE(this.arrayRule) } },

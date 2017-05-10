@@ -44,12 +44,20 @@ export function parseBoolean(image : string){
     return (image[0] === 't') ? true : false;
 }
 
-export function parseDateTime(image: string){
+export function parseOffetDateTime(image: string){
     return moment(image).toDate();
 }
 
-export function parseTime(image: string){
-    return moment('0000-00-00T'+image).toDate();
+export function parseLocalDateTime(image: string){
+    return moment(image+'Z').toDate();
+}
+
+export function parseLocalDate(image: string){
+    return moment(image+'T00:00:00Z').toDate();
+}
+
+export function parseLocalTime(image: string){
+    return moment('0000-00-00T'+image+'Z').toDate();
 }
 
 export function parseEscapedUnicode(unicode): string {

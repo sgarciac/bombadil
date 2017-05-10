@@ -27,6 +27,13 @@ function bombadilToTomlTestAtomicValue(input: toml.TomlAtomicValue) {
         case toml.TomlAtomicValueType.OffsetDateTime: {
             return { type: 'datetime', value: input.image };
         }
+        case toml.TomlAtomicValueType.LocalDate: {
+            return { type: 'datetime', value: input.image };
+        }
+        case toml.TomlAtomicValueType.LocalTime: {
+            return { type: 'datetime', value: input.image };
+        }
+
         default: {
             throw "eh!?";
         }
