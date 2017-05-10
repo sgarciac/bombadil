@@ -16,6 +16,12 @@ export class TomlReader {
     result: any;
     errors: TomlError[];
 
+    /**
+     * Read a TOML document
+     * 
+     * @param input the TOML document string
+     * @param full_value wheter the full typing information will be returned or not
+     */
     public readToml(input: string, full_value: boolean = false) {
         input = input + '\n';
         this.errors = [];
@@ -61,12 +67,12 @@ function load_toml_document(entries: p.TopLevelTomlDocumentEntry[], toml_excepti
             }
         } else if (entry instanceof p.TomlTableHeader) {
             current = init_table(root, entry.headers, directly_initialized_tables, headers_initialized_table_arrays, false, toml_exceptions, entry.token);
-            if(!current) {
+            if (!current) {
                 return null;
             }
         } else if (entry instanceof p.TomlTableArrayEntryHeader) {
             current = init_table(root, entry.headers, directly_initialized_tables, headers_initialized_table_arrays, true, toml_exceptions, entry.token);
-            if(!current){
+            if (!current) {
                 return null;
             }
         }
@@ -74,14 +80,23 @@ function load_toml_document(entries: p.TopLevelTomlDocumentEntry[], toml_excepti
     return root;
 }
 
+/**
+ * Returns whether the input is a table or not
+ */
 function isTable(obj): boolean {
     return (obj != null) && (typeof obj === 'object') && !(obj instanceof Array)
 }
 
+/**
+ * Returns whether the input is an array or tables or not
+ */
 function isTableArray(obj): boolean {
     return (obj != null) && (obj instanceof Array) && isTable(obj[0]);
 }
 
+/**
+ * Returns whether the input is a table or an array or tables or not
+ */
 function isTableOrTableArray(obj): boolean {
     return isTable(obj) || isTableArray(obj);
 }
@@ -103,14 +118,14 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
                 return null;
             } else {
                 if (isTable(context)) { // value is a table, indirectly initialized
-                    if(isArray) {
+                    if (isArray) {
                         toml_exceptions.push({ message: 'Path has already been initialized to a table, not an array table', token: parser_token });
-                        return null;    
+                        return null;
                     }
                     directly_initialized_tables.push(context);
                     return context;
                 } else if (isTableArray(context)) { // value is a table array
-                    if(!isArray) {
+                    if (!isArray) {
                         toml_exceptions.push({ message: 'Path has already been initialized to a table array, not a table', token: parser_token });
                         return null;
                     }
