@@ -26,7 +26,7 @@ function bombadilToTomlTestAtomicValue(input: toml.TomlAtomicValue) {
         }
         case toml.TomlAtomicValueType.OffsetDateTime: {
             return { type: 'datetime', value: input.image };
-        } 
+        }
         default: {
             throw "eh!?";
         }
@@ -37,7 +37,7 @@ function bombadilToTomlTest(input) {
     if (input instanceof toml.TomlAtomicValue) {
         return bombadilToTomlTestAtomicValue(input);
     } else if (input instanceof Array) {
-        return {type: 'array', value: input.map(bombadilToTomlTest)};
+        return { type: 'array', value: input.map(bombadilToTomlTest) };
     } else {
         let newObj = {}
         for (let property in input) {
@@ -47,9 +47,8 @@ function bombadilToTomlTest(input) {
     }
 }
 
-if (reader.errors.length > 0){
+if (reader.errors.length > 0) {
     process.exit(1);
 }
 console.log(JSON.stringify(bombadilToTomlTest(reader.result), null, 2));
 process.exit(0);
-//console.log(JSON.stringify(reader.result, null, 2))

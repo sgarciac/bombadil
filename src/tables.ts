@@ -3,15 +3,11 @@ import * as p from './parser';
 import ct = require('chevrotain')
 import includes = require('lodash.includes')
 import last = require('lodash.last')
-
-type TomlValue = (
-p.TomlAtomicValue |
-p.TomlInlineTable |
-p.TomlArray);
+import every = require('lodash.every')
 
 export interface ITomlException {
-    message:string,
-    token:ct.ISimpleTokenOrIToken
+    message: string,
+    token: ct.ISimpleTokenOrIToken
 }
 
 export type TomlError = ct.ILexingError | ct.exceptions.IRecognitionException | ITomlException;
@@ -19,20 +15,20 @@ export type TomlError = ct.ILexingError | ct.exceptions.IRecognitionException | 
 export class TomlReader {
     result: any;
     errors: TomlError[];
-    
-    public readToml(input:string, full_value: boolean = false){
+
+    public readToml(input: string, full_value: boolean = false) {
         input = input + "\n";
         this.errors = [];
         // Our lexer assumes a toml file always ends in \n
         let lexer_result = l.tomlLexer.tokenize(input + '\n');
-        if (lexer_result.errors.length > 0){
+        if (lexer_result.errors.length > 0) {
             this.errors = lexer_result.errors;
             this.result = undefined;
             return;
         }
         let parser = new p.TomlParser(lexer_result.tokens, l.allTokens);
         let entries = parser.documentRule();
-        if (parser.errors.length > 0){
+        if (parser.errors.length > 0) {
             this.errors = parser.errors;
             this.result = undefined;
             return;
@@ -42,7 +38,8 @@ export class TomlReader {
 }
 
 
-/** return an object represeting the TOML document, based on entries returned by the parser 
+/**
+* return an object represeting the TOML document, based on entries returned by the parser 
 * which are of one of three types : TomlKeyValue, TomlTableHeader and TomlTableArrayEntryHader
 * 
 * @param entries the result of a Toml Parser Document Rule
@@ -51,7 +48,7 @@ export class TomlReader {
 * @return an javascript object representing the toml document
 */
 
-function load_toml_document(entries: p.TopLevelTomlDocumentEntry[], toml_exceptions: TomlError[], full_value : boolean) {
+function load_toml_document(entries: p.TopLevelTomlDocumentEntry[], toml_exceptions: TomlError[], full_value: boolean) {
     let root = {};
     // keeps the tables that have been directly defined
     let directly_initialized_tables = [];
@@ -61,24 +58,24 @@ function load_toml_document(entries: p.TopLevelTomlDocumentEntry[], toml_excepti
     for (let entry of entries) {
         if (entry instanceof p.TomlKeyValue) {
             processKeyValue(entry, current, directly_initialized_tables, toml_exceptions, entry.token, full_value);
-        } else if (entry instanceof p.TomlTableHeader){
+        } else if (entry instanceof p.TomlTableHeader) {
             current = init_table(root, entry.headers, directly_initialized_tables, headers_initialized_table_arrays, false, toml_exceptions, entry.token);
-        } else if (entry instanceof p.TomlTableArrayEntryHeader){
+        } else if (entry instanceof p.TomlTableArrayEntryHeader) {
             current = init_table(root, entry.headers, directly_initialized_tables, headers_initialized_table_arrays, true, toml_exceptions, entry.token);
         }
     }
     return root;
 }
 
-function isTable(obj) : boolean {
+function isTable(obj): boolean {
     return (obj != null) && (typeof obj === 'object') && !(obj instanceof Array)
 }
 
-function isTableArray(obj) : boolean {
+function isTableArray(obj): boolean {
     return (obj != null) && (obj instanceof Array) && isTable(obj[0]);
 }
 
-function isTableOrTableArray(obj) : boolean {
+function isTableOrTableArray(obj): boolean {
     return isTable(obj) || isTableArray(obj);
 }
 
@@ -87,31 +84,31 @@ function isTableOrTableArray(obj) : boolean {
 * @param parent the table to which the new table hierarchy will be attached
 * @param names the names of the tables
 */
-function init_table(parent, names, directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions: TomlError[], parser_token: ct.ISimpleTokenOrIToken) : object{
+function init_table(parent, names, directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions: TomlError[], parser_token: ct.ISimpleTokenOrIToken): object {
     let context = parent[names[0]];
     if ((context != undefined) && !isTableOrTableArray(context)) {
-        toml_exceptions.push({message: "Path already contains a value", token: parser_token});
-    } else{
-        if(names.length === 1){ // we are at the table being directly initialized
+        toml_exceptions.push({ message: "Path already contains a value", token: parser_token });
+    } else {
+        if (names.length === 1) { // we are at the table being directly initialized
             if (includes(directly_initialized_tables, context)) {
-                toml_exceptions.push({message: "Path has already been initialized to a table", token: parser_token});
+                toml_exceptions.push({ message: "Path has already been initialized to a table", token: parser_token });
             } else {
-                if(isTable(context)){ // value is a table, indirectly initialized
+                if (isTable(context)) { // value is a table, indirectly initialized
                     directly_initialized_tables.push(context);
                     return context;
-                } else if (isTableArray(context)){ // value is a table array
+                } else if (isTableArray(context)) { // value is a table array
                     if (!includes(headers_initialized_table_arrays, context)) {
-                        toml_exceptions.push({message: 'An static inline table has already been initialized for path.', token: parser_token});
+                        toml_exceptions.push({ message: 'An static inline table has already been initialized for path.', token: parser_token });
                     } else {
                         let table = {};
                         context.push(table);
                         directly_initialized_tables.push(table);
                         return table;
                     }
-                } 
+                }
                 else if (context === undefined) {
                     context = {};
-                    if (isArray){
+                    if (isArray) {
                         let table_array = [context];
                         headers_initialized_table_arrays.push(table_array);
                         parent[names[0]] = table_array;
@@ -125,15 +122,15 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
                 }
             }
         } else {
-            if(isTable(context)){ // value is an existing table
-                return init_table(context, names.slice(1), directly_initialized_tables,headers_initialized_table_arrays, isArray, toml_exceptions, parser_token);
+            if (isTable(context)) { // value is an existing table
+                return init_table(context, names.slice(1), directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions, parser_token);
             } else if (isTableArray(context)) {
                 return init_table(last(context), names.slice(1), directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions, parser_token);
             }
             else if (context === undefined) { // init a table indirectly
                 context = {};
                 parent[names[0]] = context;
-                return init_table(context, names.slice(1),directly_initialized_tables, headers_initialized_table_arrays,isArray, toml_exceptions, parser_token);
+                return init_table(context, names.slice(1), directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions, parser_token);
             } else {
                 throw 'unknown type!';
             }
@@ -146,33 +143,55 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
 * @param current the current context
 */
 function processKeyValue(kv: p.TomlKeyValue, current: object, directly_initialized_tables: any[], toml_exceptions, parser_token: ct.ISimpleTokenOrIToken, full_value) {
-    let value = tomlValueToObject(kv.value, full_value);
+    let value = tomlValueToObject(kv.value, full_value, toml_exceptions);
     if (current[kv.key] != undefined) {
         // can we statically define a table that has been implicitely defined?
-        toml_exceptions.push({message: "Path has already been initialized to some value", token: parser_token});
+        toml_exceptions.push({ message: "Path has already been initialized to some value", token: parser_token });
     } else {
         current[kv.key] = value;
-        if(isTable(value)){
+        if (isTable(value)) {
             directly_initialized_tables.push(value);
-        }    
+        }
     }
 }
+
+function everySameType(array: p.TomlArray) {
+    if (array.contents.length === 0) {
+        return true
+    } else {
+        let first = array.contents[0]
+        if (first instanceof p.TomlArray) {
+            return every(array.contents, item => (item instanceof p.TomlArray))
+        } else if (first instanceof p.TomlInlineTable) {
+            return every(array.contents, item => (item instanceof p.TomlInlineTable))
+        } else if (first instanceof p.TomlAtomicValue) {
+            let type = first.type
+            return every(array.contents, item => (item instanceof p.TomlAtomicValue) && item.type === type)
+        } else {
+            throw "euh!"
+        }
+    }
+}
+
 
 /**
 * Returns a toml value transformed to a simple JSON object (a string, a number, an array or an object)
 * @param value the toml value
 */
-function tomlValueToObject(value: TomlValue, full_value : boolean){
-    if(value instanceof p.TomlAtomicValue){
+function tomlValueToObject(value: p.TomlValue, full_value: boolean, toml_exceptions) {
+    if (value instanceof p.TomlAtomicValue) {
         return full_value ? value : value.value;
     }
-    if(value instanceof p.TomlArray){
-        return value.contents.map(item => tomlValueToObject(item, full_value));
+    if (value instanceof p.TomlArray) {
+        if (!everySameType(value)) {
+            toml_exceptions.push({ message: "Elements in array are not of the same type", token: value.token });
+        }
+        return value.contents.map(item => tomlValueToObject(item, full_value, toml_exceptions));
     }
-    if(value instanceof p.TomlInlineTable){
+    if (value instanceof p.TomlInlineTable) {
         let newObject = {};
-        for(let kv of value.bindings){
-            newObject[kv.key] = tomlValueToObject(kv.value, full_value);
+        for (let kv of value.bindings) {
+            newObject[kv.key] = tomlValueToObject(kv.value, full_value, toml_exceptions);
         }
         return newObject;
     }

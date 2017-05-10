@@ -11,7 +11,8 @@ export class TomlKeyValue { constructor(public key: string, public value: any, p
 
 // Structures
 export class TomlInlineTable { constructor(public bindings: TomlKeyValue[]) { } }
-export class TomlArray { constructor(public contents: any[]) { } }
+
+export class TomlArray { constructor(public contents: TomlValue[], public token: ct.ISimpleTokenOrIToken) { } }
 
 // Atomic Values
 export enum TomlAtomicValueType {
@@ -21,6 +22,11 @@ export enum TomlAtomicValueType {
 export class TomlAtomicValue { constructor(public type: TomlAtomicValueType, public image: string, public value: any) { } }
 
 export type TopLevelTomlDocumentEntry = (TomlKeyValue | TomlTableHeader | TomlTableArrayEntryHeader)
+
+export type TomlValue = (
+    TomlAtomicValue |
+    TomlInlineTable |
+    TomlArray);
 
 
 export class TomlParser extends ct.Parser {
@@ -74,7 +80,7 @@ export class TomlParser extends ct.Parser {
     // not using MANY_SEP because of trailing commas.
     arrayRule = this.RULE('arrayRule', () => {
         let values: any[] = [];
-        this.CONSUME(l.OpenArray);
+        let token = this.CONSUME(l.OpenArray);
         this.OPTION(() => {
             values.push(this.SUBRULE(this.valueRule));
             this.MANY(() => {
@@ -84,7 +90,7 @@ export class TomlParser extends ct.Parser {
             this.MANY2(() => { this.CONSUME2(l.Comma) });
         })
         this.CONSUME(l.CloseArray);
-        return new TomlArray(values);
+        return new TomlArray(values, token);
     })
 
     inlineTableRule = this.RULE('inlineTableRule', () => {

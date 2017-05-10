@@ -12,11 +12,13 @@
   "license": "Artistic-2.0",
   "dependencies": {
     "chevrotain": "^0.25.1",
+    "lodash.every": "^4.6.0",
     "lodash.includes": "^4.3.0",
     "lodash.last": "^3.0.0",
     "moment": "^2.18.1"
   },
   "devDependencies": {
+    "@types/lodash.every": "^4.6.2",
     "@types/lodash.includes": "^4.3.2",
     "@types/lodash.last": "^3.0.2",
     "@types/node": "^7.0.12",
