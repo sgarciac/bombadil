@@ -47,9 +47,11 @@ As you can see, there is some information loss. If you need the original typing 
 
 ```javascript
 var bombadil = require('@sgarciac/bombadil')
-var input = 'name = "sergio"'
+var input = 'names = ["sergio","arturo"]'
 var reader = new bombadil.TomlReader
 reader.readToml(input, true)
+reader.result // -> { names:[ TomlAtomicValue { type: 4, image: 'sergio', value: 'sergio' },TomlAtomicValue { type: 4, image: 'arturo', value: 'arturo' } ] }
+bombadil.TomlAtomicValueType[reader.result.names[0].type] // ->  'String'
 ```
 
   
