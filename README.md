@@ -43,7 +43,7 @@ By default, the toml reader will map TOML values to javascript values as follows
   * Array -> Array
   * Table -> Object
 
-As you can see, there is some information loss. If you need the original typing information, you can do:
+As you can see, there is some information loss. If you need the original typing information, you can pass a second parameter to ```readToml``` set to ```true```:
 
 ```javascript
 var bombadil = require('@sgarciac/bombadil')
@@ -54,4 +54,5 @@ reader.result // -> { names:[ TomlAtomicValue { type: 4, image: 'sergio', value:
 bombadil.TomlAtomicValueType[reader.result.names[0].type] // ->  'String'
 ```
 
+Notice that we also keep the original string representation of the value. This can be helpful for example to deal with big integers, which can not be handled by the javascript Number type.
   
