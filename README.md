@@ -1,7 +1,7 @@
 # bombadil
 Copyright Sergio Garcia
 
-A [chevrotain](https://github.com/SAP/chevrotain) based [TOML v0.4.0](https://github.com/toml-lang/toml) parser for typescript.
+A [chevrotain](https://github.com/SAP/chevrotain) based [TOML v0.4.0](https://github.com/toml-lang/toml), written in typescript.
 
 ## Usage
 
@@ -43,13 +43,13 @@ By default, the toml reader will map TOML values to javascript values as follows
   * Array -> Array
   * Table -> Object
 
-As you can see, there is some information loss. If you need full typing information, you can do:
+As you can see, there is some information loss. If you need the original typing information, you can do:
 
 ```javascript
 var bombadil = require('@sgarciac/bombadil')
 var input = 'name = "sergio"'
 var reader = new bombadil.TomlReader
-reader.readToml(input)
+reader.readToml(input, true)
 ```
 
   
