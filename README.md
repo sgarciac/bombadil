@@ -12,7 +12,7 @@ var input = fs.readFileSync('/dev/stdin', 'utf8');
 
 ### Errors
 
-The reader will store errors in the ```errors``` property. They can be either:
+If the input is not a valid TOML string, the reader will store ```null``` in its ```result``` property and it will keep the errors in its ```errors``` property. Errors can be either:
 
   * Lexer errors: [ILexingError](http://sap.github.io/chevrotain/documentation/0_28_3/interfaces/_chevrotain_d_.ilexingerror.html)
   * Parser errors: [IRecognitionException](http://sap.github.io/chevrotain/documentation/0_28_3/interfaces/_chevrotain_d_.exceptions.irecognitionexception.html)
@@ -20,6 +20,8 @@ The reader will store errors in the ```errors``` property. They can be either:
     ```typescript
     export interface ITomlException {
     message: string,
-    token: ct.ISimpleTokenOrIToken
+    token: ct.IToken
     }
     ```
+    which uses [IToken](http://sap.github.io/chevrotain/documentation/0_28_3/interfaces/_chevrotain_d_.itoken.html)
+
