@@ -10,13 +10,13 @@ reader.readToml(input, true);
 function bombadilToTomlTestAtomicValue(input: toml.TomlAtomicValue) {
     switch (input.type) {
         case toml.TomlAtomicValueType.Integer: {
-            return { type: 'integer', value: input.value };
+            return { type: 'integer', value: input.image };
         }
         case toml.TomlAtomicValueType.Float: {
-            return { type: 'float', value: input.value };
+            return { type: 'float', value: input.value.toString() };
         }
         case toml.TomlAtomicValueType.Boolean: {
-            return { type: 'bool', value: input.image };
+            return { type: 'bool', value: input.image.toString() };
         }
         case toml.TomlAtomicValueType.String: {
             return { type: 'string', value: input.value };
