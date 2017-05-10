@@ -1,4 +1,6 @@
 # bombadil
 Copyright Sergio Garcia
 
-TOML parser in typescript 
+A [chevrotain](https://github.com/SAP/chevrotain) based [TOML](https://github.com/toml-lang/toml) parser for typescript.
+
+
