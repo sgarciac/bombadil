@@ -7,7 +7,7 @@ import every = require('lodash.every')
 
 export interface ITomlException {
     message: string,
-    token: ct.ISimpleTokenOrIToken
+    token: ct.IToken
 }
 
 export type TomlError = ct.ILexingError | ct.exceptions.IRecognitionException | ITomlException;
@@ -94,7 +94,7 @@ function isTableOrTableArray(obj): boolean {
 * @param parent the table to which the new table hierarchy will be attached
 * @param names the names of the tables
 */
-function init_table(parent, names, directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions: TomlError[], parser_token: ct.ISimpleTokenOrIToken): object {
+function init_table(parent, names, directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions: TomlError[], parser_token: ct.IToken): object {
     let context = parent[names[0]];
     if ((context != undefined) && !isTableOrTableArray(context)) {
         toml_exceptions.push({ message: "Path already contains a value", token: parser_token });
@@ -163,7 +163,7 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
 * @param kv the key-value pair
 * @param current the current context
 */
-function processKeyValue(kv: p.TomlKeyValue, current: object, directly_initialized_tables: any[], toml_exceptions, parser_token: ct.ISimpleTokenOrIToken, full_value) {
+function processKeyValue(kv: p.TomlKeyValue, current: object, directly_initialized_tables: any[], toml_exceptions, parser_token: ct.IToken, full_value) {
     let value = tomlValueToObject(kv.value, full_value, toml_exceptions);
     if (current[kv.key] != undefined) {
         // can we statically define a table that has been implicitely defined?

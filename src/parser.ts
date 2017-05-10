@@ -3,16 +3,16 @@ import * as l from './lexer';
 import * as tools from './tools';
 
 // Table headers. We keep the Token for reporting errors during the loading phase.
-export class TomlTableHeader { constructor(public headers: string[], public token: ct.ISimpleTokenOrIToken) { } }
-export class TomlTableArrayEntryHeader { constructor(public headers: string[], public token: ct.ISimpleTokenOrIToken) { } }
+export class TomlTableHeader { constructor(public headers: string[], public token: ct.IToken) { } }
+export class TomlTableArrayEntryHeader { constructor(public headers: string[], public token: ct.IToken) { } }
 
 // Bindings
-export class TomlKeyValue { constructor(public key: string, public value: any, public token: ct.ISimpleTokenOrIToken) { } }
+export class TomlKeyValue { constructor(public key: string, public value: any, public token: ct.IToken) { } }
 
 // Structures
 export class TomlInlineTable { constructor(public bindings: TomlKeyValue[]) { } }
 
-export class TomlArray { constructor(public contents: TomlValue[], public token: ct.ISimpleTokenOrIToken) { } }
+export class TomlArray { constructor(public contents: TomlValue[], public token: ct.IToken) { } }
 
 // Atomic Values
 export enum TomlAtomicValueType {
