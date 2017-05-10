@@ -44,14 +44,14 @@ export class TomlReader {
 }
 
 /**
-* return an object represeting the TOML document, based on entries returned by the parser 
-* which are of one of three types : TomlKeyValue, TomlTableHeader and TomlTableArrayEntryHader
-* 
-* @param entries the result of a Toml Parser Document Rule
-* @param toml_exceptions an array that will be filled with toml exceptions, if they occur
-* @param full_value whether to return full meta-data for atomic values or not
-* @return an javascript object representing the toml document
-*/
+ * return an object represeting the TOML document, based on entries returned by the parser 
+ * which are of one of three types : TomlKeyValue, TomlTableHeader and TomlTableArrayEntryHader
+ * 
+ * @param entries the result of a Toml Parser Document Rule
+ * @param toml_exceptions an array that will be filled with toml exceptions, if they occur
+ * @param full_value whether to return full meta-data for atomic values or not
+ * @return an javascript object representing the toml document
+ */
 
 function load_toml_document(entries: p.TopLevelTomlDocumentEntry[], toml_exceptions: TomlError[], full_value: boolean) {
     let root = {};
@@ -102,10 +102,11 @@ function isTableOrTableArray(obj): boolean {
 }
 
 /**
-* Create a hierarchy of tables and returns the last one, given a list of names
-* @param parent the table to which the new table hierarchy will be attached
-* @param names the names of the tables
-*/
+ * Create a hierarchy of tables and returns the last one, given a list of names
+ *
+ * @param parent the table to which the new table hierarchy will be attached
+ * @param names the names of the tables
+ */
 function init_table(parent, names, directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions: TomlError[], parser_token: ct.IToken): object {
     let context = parent[names[0]];
     if ((context != undefined) && !isTableOrTableArray(context)) {
@@ -172,9 +173,9 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
 }
 
 /**
-* @param kv the key-value pair
-* @param current the current context
-*/
+ * @param kv the key-value pair
+ * @param current the current context
+ */
 function processKeyValue(kv: p.TomlKeyValue, current: object, directly_initialized_tables: any[], toml_exceptions, parser_token: ct.IToken, full_value) {
     let value = tomlValueToObject(kv.value, full_value, toml_exceptions);
     if (current[kv.key] != undefined) {
@@ -210,9 +211,9 @@ function everySameType(array: p.TomlArray) {
 
 
 /**
-* Returns a toml value transformed to a simple JSON object (a string, a number, an array or an object)
-* @param value the toml value
-*/
+ * Returns a toml value transformed to a simple JSON object (a string, a number, an array or an object)
+ * @param value the toml value
+ */
 function tomlValueToObject(value: p.TomlValue, full_value: boolean, toml_exceptions) {
     if (value instanceof p.TomlAtomicValue) {
         return full_value ? value : value.value;
