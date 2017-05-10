@@ -6,8 +6,8 @@ A  based [TOML v0.4.0](https://github.com/toml-lang/toml) parser for typescript.
 ## Usage
 
 ```typescript
-import toml = require('./bombadil')
-var input = fs.readFileSync('/dev/stdin', 'utf8');
+import toml = require('bombadil')
+var input = 'name = "sergio"'
 ```
 
 ### Errors
@@ -25,3 +25,26 @@ If the input is not a valid TOML string, the reader will store ```null``` in its
     ```
     which uses [IToken](http://sap.github.io/chevrotain/documentation/0_28_3/interfaces/_chevrotain_d_.itoken.html)
 
+## Type mapping
+
+By default, the toml reader will map TOML values to javascript values as follows:
+
+  * Integers -> Number
+  * Float -> Number
+  * String -> String
+  * Boolean -> Boolean
+  * Offset Date Time -> [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+  * Local Date Time -> [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) (using UTC±00:00)
+  * Local Date -> [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) (using UTC±00:00 and time 00:00:00)
+  * Local Time -> [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) (using UTC±00:00 and date 0000-00-00)
+  * Array -> Array
+  * Table -> Object
+
+As you can see, there is some information loss. If you need full typing information, you can do:
+
+```typescript
+import toml = require('bombadil')
+var input = 'name = "sergio"'
+```
+
+  
