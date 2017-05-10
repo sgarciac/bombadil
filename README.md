@@ -5,9 +5,12 @@ A [chevrotain](https://github.com/SAP/chevrotain) based [TOML v0.4.0](https://gi
 
 ## Usage
 
-```typescript
-import toml = require('bombadil')
+```javascript
+var bombadil = require('@sgarciac/bombadil')
 var input = 'name = "sergio"'
+var reader = new bombadil.TomlReader
+reader.readToml(input)
+reader.result // -> {name: 'sergio'}
 ```
 
 ### Errors
@@ -42,9 +45,11 @@ By default, the toml reader will map TOML values to javascript values as follows
 
 As you can see, there is some information loss. If you need full typing information, you can do:
 
-```typescript
-import toml = require('bombadil')
+```javascript
+var bombadil = require('@sgarciac/bombadil')
 var input = 'name = "sergio"'
+var reader = new bombadil.TomlReader
+reader.readToml(input)
 ```
 
   
