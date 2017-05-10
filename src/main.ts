@@ -35,7 +35,7 @@ function bombadilToTomlTestAtomicValue(input: toml.TomlAtomicValue) {
         }
 
         default: {
-            throw "eh!?";
+            throw 'eh!?';
         }
     }
 }
