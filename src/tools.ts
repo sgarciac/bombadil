@@ -36,32 +36,32 @@ export function trimWhiteSpacePrefix(string) {
 }
 
 // Parsing of TOML values
-export function parseNumber(image : string){
+export function parseNumber(image: string) {
     return Number(cleanNumberImage(image));
 }
 
-export function parseBoolean(image : string){
+export function parseBoolean(image: string) {
     return (image[0] === 't') ? true : false;
 }
 
-export function parseOffetDateTime(image: string){
+export function parseOffetDateTime(image: string) {
     return moment(image).toDate();
 }
 
-export function parseLocalDateTime(image: string){
-    return moment(image+'Z').toDate();
+export function parseLocalDateTime(image: string) {
+    return moment(image + 'Z').toDate();
 }
 
-export function parseLocalDate(image: string){
-    return moment(image+'T00:00:00Z').toDate();
+export function parseLocalDate(image: string) {
+    return moment(image + 'T00:00:00Z').toDate();
 }
 
-export function parseLocalTime(image: string){
-    return moment('0000-00-00T'+image+'Z').toDate();
+export function parseLocalTime(image: string) {
+    return moment('0000-00-00T' + image + 'Z').toDate();
 }
 
 export function parseEscapedUnicode(unicode): string {
-    let size = (unicode[1] == 'u') ? 4 : 6;
+    let size = (unicode[1] == 'u') ? 4 : 8;
     let codeString = unicode.substr(2, 1 + size);
     return fromCodePoint([parseInt(codeString, 16)]);
 }

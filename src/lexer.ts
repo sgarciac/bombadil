@@ -134,7 +134,7 @@ export class EscapedChar extends ct.Token {
 }
 
 export class EscapedUnicode extends ct.Token {
-    static PATTERN = /(\\u([0-9A-Fa-f]{4}))|(\\U([0-9A-Fa-f]{6}))/
+    static PATTERN = /(\\u([0-9A-Fa-f]{4}))|(\\U([0-9A-Fa-f]{8}))/
 }
 
 export class SubBasicString extends ct.Token {
