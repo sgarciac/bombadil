@@ -7,10 +7,10 @@ A [chevrotain](https://github.com/SAP/chevrotain) based [TOML v0.4.0](https://gi
 
 ```javascript
 var bombadil = require('@sgarciac/bombadil')
-var input = 'name = "sergio"'
+var input = 'whatever = 1'
 var reader = new bombadil.TomlReader
 reader.readToml(input)
-reader.result // -> {name: 'sergio'}
+reader.result // -> {whatever: 1}
 ```
 
 ### Errors
