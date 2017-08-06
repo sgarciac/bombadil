@@ -49,7 +49,11 @@ export class TomlParser extends ct.Parser {
         let keyword = this.SUBRULE(this.identifierRule);
         let equals = this.CONSUME(l.OpenValue);
         let value = this.SUBRULE(this.valueRule);
-        this.CONSUME(l.CloseValue);
+        this.OR([
+            { ALT: () => this.CONSUME(l.CloseValue) },
+            { ALT: () => this.CONSUME(ct.EOF) }
+        ]);
+        //this.CONSUME(l.CloseValue);
         return new TomlKeyValue(keyword, value, equals);
     })
 

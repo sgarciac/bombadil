@@ -23,10 +23,9 @@ export class TomlReader {
      * @param full_value wheter the full typing information will be returned or not
      */
     public readToml(input: string, full_value: boolean = false) {
-        input = input + '\n';
         this.errors = [];
         // Our lexer assumes a toml file always ends in \n
-        let lexer_result = l.tomlLexer.tokenize(input + '\n');
+        let lexer_result = l.tomlLexer.tokenize(input);
         if (lexer_result.errors.length > 0) {
             this.errors = lexer_result.errors;
             this.result = undefined;
