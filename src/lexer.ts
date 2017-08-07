@@ -42,8 +42,13 @@ export class LocalTime extends ct.Token {
 
 export class EndOfLine extends ct.Token {
     static PATTERN = /(\r\n|\n)+/;
+}
+
+export class SkippedEndOfLine extends ct.Token {
+    static PATTERN = /(\r\n|\n)+/;
     static GROUP = ct.Lexer.SKIPPED;
 }
+
 
 export class WhiteSpace extends ct.Token {
     static PATTERN = /[^\S\n\r]+/;
@@ -174,7 +179,7 @@ export class OpenTable extends ct.Token {
 }
 
 export class CloseTable extends ct.Token {
-    static PATTERN = /\]((([^\S\n\r]*#.*)|[^\S\n\r]*)(\r\n|\n))/;
+    static PATTERN = /\]/;
     static POP_MODE = true;
 }
 
@@ -184,7 +189,7 @@ export class OpenTableArrayItem extends ct.Token {
 }
 
 export class CloseTableArrayItem extends ct.Token {
-    static PATTERN = /\]\][^\S\n\r]*/;
+    static PATTERN = /\]\]/;
     static POP_MODE = true;
 }
 
@@ -217,7 +222,7 @@ var single_line_skipped: ct.TokenConstructor[] = [
 
 var all_skipped: ct.TokenConstructor[] = [
     WhiteSpace,
-    EndOfLine,
+    SkippedEndOfLine,
     OneLineComment,
 ]
 
@@ -227,8 +232,9 @@ var modes: ct.IMultiModeLexerDefinition = {
             OpenTableArrayItem,
             OpenTable,
             Identifier,
+            EndOfLine,
             ...open_identifier_strings,
-            ...all_skipped,
+            ...single_line_skipped,
             OpenValue,
         ],
         value: [

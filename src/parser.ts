@@ -38,7 +38,8 @@ export class TomlParser extends ct.Parser {
                 [
                     { ALT: () => { documentEntries.push(this.SUBRULE(this.tableHeaderRule)) } },
                     { ALT: () => { documentEntries.push(this.SUBRULE(this.tableArrayEntryHeaderRule)) } },
-                    { ALT: () => { documentEntries.push(this.SUBRULE(this.keyValueRule)) } }
+                    { ALT: () => { documentEntries.push(this.SUBRULE(this.keyValueRule)) } },
+                    { ALT: () => { this.CONSUME(l.EndOfLine)}}
                 ]
             );
         });
@@ -120,7 +121,10 @@ export class TomlParser extends ct.Parser {
                 headers.push(this.SUBRULE(this.identifierRule));
             }
         });
-        this.CONSUME(l.CloseTable);
+        this.OR([
+            { ALT: () => this.CONSUME(l.CloseTable) },
+            { ALT: () => this.CONSUME(ct.EOF) }
+        ]);
         return new TomlTableHeader(headers, open_table);
     });
 
@@ -132,7 +136,10 @@ export class TomlParser extends ct.Parser {
                 headers.push(this.SUBRULE(this.identifierRule));
             }
         });
-        this.CONSUME(l.CloseTableArrayItem);
+        this.OR([
+            { ALT: () => this.CONSUME(l.CloseTableArrayItem) },
+            { ALT: () => this.CONSUME(ct.EOF) }
+        ]);
         return new TomlTableArrayEntryHeader(headers, open_table);
     });
 
