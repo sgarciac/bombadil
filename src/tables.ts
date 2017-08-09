@@ -24,7 +24,6 @@ export class TomlReader {
      */
     public readToml(input: string, full_value: boolean = false) {
         this.errors = [];
-        // Our lexer assumes a toml file always ends in \n
         let lexer_result = l.tomlLexer.tokenize(input);
         if (lexer_result.errors.length > 0) {
             this.errors = lexer_result.errors;
