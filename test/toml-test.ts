@@ -1,7 +1,10 @@
 import { readFileSync } from 'fs';
 import * as path from 'path';
-import { TomlReader } from '../src/bombadil';
-import { TomlAtomicValue, TomlAtomicValueType } from '../src/parser';
+import { TomlReader, TomlError } from '../src/bombadil';
+import {
+    TomlAtomicValue, TomlAtomicValueType, TomlArray, TopLevelTomlDocumentEntry,
+    TomlKeyValue, TomlTableArrayEntryHeader,
+} from '../src/parser';
 import { safeLoad } from 'js-yaml';
 
 function readSample(name: string): string {
@@ -41,15 +44,23 @@ function bombadilToTomlTestAtomicValue(input: TomlAtomicValue) {
     }
 }
 
-function bombadilToTomlTest(input) {
+function bombadilToTomlTest(input, property: boolean) {
     if (input instanceof TomlAtomicValue) {
         return bombadilToTomlTestAtomicValue(input);
+    } else if (input instanceof TomlArray) {
+        let vals = input.contents.map((x) => bombadilToTomlTest(x, false));
+        return { type: 'array', value: vals };
     } else if (input instanceof Array) {
-        return { type: 'array', value: input.map(bombadilToTomlTest) };
+        const value = input.map((x) => bombadilToTomlTest(x, false));
+        // This is the bit that needed to be tweaked to match toml-test
+        if (property) return value;
+        return { type: 'array', value: value };
     } else {
         let newObj = {}
         for (let property in input) {
-            newObj[property] = bombadilToTomlTest(input[property]);
+            let pval = input[property];
+            let val = bombadilToTomlTest(pval, true);
+            newObj[property] = val;
         }
         return newObj;
     }
@@ -61,7 +72,9 @@ function compare(toml: string) {
     let baseline = JSON.parse(readSample(toml + '.json'));
     let reader = new TomlReader();
     reader.readToml(input, true);
-    let val = bombadilToTomlTest(reader.result);
+    // let reader2 = new TomlReader();
+    // reader2.readToml(input, false);
+    let val = bombadilToTomlTest(reader.result, false);
     expect(val).toEqual(baseline);
 }
 
