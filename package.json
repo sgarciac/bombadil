@@ -34,7 +34,7 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "tslint -c tslint.json 'src/*.ts'"
   },
   "jest": {

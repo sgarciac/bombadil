@@ -2,3 +2,4 @@ src
 .vscode
 tsconfig.json
 tslint.json
+coverage
