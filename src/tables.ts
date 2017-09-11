@@ -61,16 +61,16 @@ function load_toml_document(entries: ast.TopLevelTomlDocumentEntry[], toml_excep
     let headers_initialized_table_arrays = [];
     let current = root;
     for (let entry of entries) {
-        if (entry.type == 'tomlKeyValue') {
+        if (entry.type == ast.keyValue) {
             if (!processKeyValue(entry, current, directly_initialized_tables, toml_exceptions, entry.token, full_value)) {
                 return null;
             }
-        } else if (entry.type == 'tableHeader') {
+        } else if (entry.type == ast.tableHeader) {
             current = init_table(root, entry.headers, directly_initialized_tables, headers_initialized_table_arrays, false, toml_exceptions, entry.token);
             if (!current) {
                 return null;
             }
-        } else if (entry.type == 'tableArrayEntryHeader') {
+        } else if (entry.type == ast.tableArrayEntryHeader) {
             current = init_table(root, entry.headers, directly_initialized_tables, headers_initialized_table_arrays, true, toml_exceptions, entry.token);
             if (!current) {
                 return null;
@@ -207,24 +207,24 @@ function everySameType(array: ast.TomlArray) {
  */
 function tomlValueToObject(value: ast.TomlValue, full_value: boolean, toml_exceptions) {
     switch (value.type) {
-        case 'offsetDateTime':
+        case ast.offsetDateTime:
             return full_value ? value : value.value;
-        case 'localDateTime':
+        case ast.localDateTime:
             return full_value ? value : value.value;
-        case 'localDate':
+        case ast.localDate:
             return full_value ? value : value.value;
-        case 'localTime':
+        case ast.localTime:
             return full_value ? value : value.value;
-        case 'atomicString':
+        case ast.atomicString:
             return full_value ? value : value.value;
-        case 'atomicInteger':
+        case ast.atomicInteger:
             return full_value ? value : value.value;
-        case 'atomicFloat':
+        case ast.atomicFloat:
             return full_value ? value : value.value;
-        case 'atomicBoolean':
+        case ast.atomicBoolean:
             return full_value ? value : value.value;
     }
-    if (value.type == 'tomlArray') {
+    if (value.type == ast.array) {
         if (!everySameType(value)) {
             toml_exceptions.push({ message: 'Elements in array are not of the same type', token: value.token });
             return null;
@@ -232,7 +232,7 @@ function tomlValueToObject(value: ast.TomlValue, full_value: boolean, toml_excep
         let v = value.contents.map(item => tomlValueToObject(item, full_value, toml_exceptions));
         return full_value ? value : v;
     }
-    if (value.type == 'tomlInlineTable') {
+    if (value.type == ast.inlineTable) {
         let newObject = {};
         for (let kv of value.bindings) {
             let v = tomlValueToObject(kv.value, full_value, toml_exceptions);

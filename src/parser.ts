@@ -3,39 +3,12 @@ import * as l from './lexer';
 import * as tools from './tools';
 
 import {
-    TomlTableHeader, TomlKeyValue, TomlInlineTable, TomlArray,
+    tomlTableHeader, TomlKeyValue, tomlKeyValue, tomlInlineTable, tomlArray,
     TomlAtomicValueType, TopLevelTomlDocumentEntry, TomlAtomicValue,
-    TomlAtomicBoolean, TomlAtomicFloat, TomlAtomicInteger, TomlAtomicLocalDate,
-    TomlAtomicLocalDateTime, TomlAtomicLocalTime, TomlAtomicOffsetDateTime,
-    TomlAtomicString, TomlTableArrayEntryHeader,
+    tomlAtomicBoolean, tomlAtomicFloat, tomlAtomicInteger, tomlAtomicLocalDate,
+    tomlAtomicLocalDateTime, tomlAtomicLocalTime, tomlAtomicOffsetDateTime,
+    tomlAtomicString, tomlTableArrayEntryHeader,
 } from './AST';
-
-// // Table headers. We keep the Token for reporting errors during the loading phase.
-// export class TomlTableHeader { constructor(public headers: string[], public token: ct.IToken) { } }
-// export class TomlTableArrayEntryHeader { constructor(public headers: string[], public token: ct.IToken) { } }
-
-// // Bindings
-// export class TomlKeyValue { constructor(public key: string, public value: any, public token: ct.IToken) { } }
-
-// // Structures
-// export class TomlInlineTable { constructor(public bindings: TomlKeyValue[]) { } }
-
-// export class TomlArray { constructor(public contents: TomlValue[], public token: ct.IToken) { } }
-
-// // Atomic Values
-// export enum TomlAtomicValueType {
-//     OffsetDateTime, LocalDateTime, LocalDate, LocalTime, String, Integer, Float, Boolean
-// }
-
-// export class TomlAtomicValue { constructor(public type: TomlAtomicValueType, public image: string, public value: any) { } }
-
-// export type TopLevelTomlDocumentEntry = (TomlKeyValue | TomlTableHeader | TomlTableArrayEntryHeader)
-
-// export type TomlValue = (
-//     TomlAtomicValue |
-//     TomlInlineTable |
-//     TomlArray);
-
 
 export class TomlParser extends ct.Parser {
 
@@ -63,20 +36,20 @@ export class TomlParser extends ct.Parser {
             { ALT: () => this.CONSUME(ct.EOF) }
         ]);
         //this.CONSUME(l.CloseValue);
-        return new TomlKeyValue(keyword, value, equals);
+        return tomlKeyValue(keyword, value, equals);
     })
 
     valueRule = this.RULE('valueRule', () => {
         let value: any;
         this.OR([
             // Atomic values
-            { ALT: () => { let image = this.CONSUME(l.Float).image; value = new TomlAtomicFloat(image, tools.parseNumber(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.Integer).image; value = new TomlAtomicInteger(image, tools.parseNumber(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.Booolean).image; value = new TomlAtomicBoolean(image, tools.parseBoolean(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.OffsetDateTime).image; value = new TomlAtomicOffsetDateTime(image, tools.parseOffetDateTime(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.LocalDateTime).image; value = new TomlAtomicLocalDateTime(image, tools.parseLocalDateTime(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.LocalDate).image; value = new TomlAtomicLocalDate(image, tools.parseLocalDate(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.LocalTime).image; value = new TomlAtomicLocalTime(image, tools.parseLocalTime(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.Float).image; value = tomlAtomicFloat(image, tools.parseNumber(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.Integer).image; value = tomlAtomicInteger(image, tools.parseNumber(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.Booolean).image; value = tomlAtomicBoolean(image, tools.parseBoolean(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.OffsetDateTime).image; value = tomlAtomicOffsetDateTime(image, tools.parseOffetDateTime(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.LocalDateTime).image; value = tomlAtomicLocalDateTime(image, tools.parseLocalDateTime(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.LocalDate).image; value = tomlAtomicLocalDate(image, tools.parseLocalDate(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.LocalTime).image; value = tomlAtomicLocalTime(image, tools.parseLocalTime(image)) } },
 
             // structures
             { ALT: () => { value = this.SUBRULE(this.arrayRule) } },
@@ -103,7 +76,7 @@ export class TomlParser extends ct.Parser {
             this.MANY2(() => { this.CONSUME2(l.Comma) });
         })
         this.CONSUME(l.CloseArray);
-        return new TomlArray(values, token);
+        return tomlArray(values, token);
     })
 
     inlineTableRule = this.RULE('inlineTableRule', () => {
@@ -114,10 +87,10 @@ export class TomlParser extends ct.Parser {
             let equals = this.CONSUME(l.OpenInlineValue);
             let value = this.SUBRULE(this.valueRule);
             this.CONSUME(l.CloseInlineValue);
-            bindings.push(new TomlKeyValue(identifier, value, equals));
+            bindings.push(tomlKeyValue(identifier, value, equals));
         });
         this.CONSUME(l.CloseInlineTable);
-        return new TomlInlineTable(bindings);
+        return tomlInlineTable(bindings);
     })
 
 
@@ -133,7 +106,7 @@ export class TomlParser extends ct.Parser {
             { ALT: () => this.CONSUME(l.CloseTable) },
             { ALT: () => this.CONSUME(ct.EOF) }
         ]);
-        return new TomlTableHeader(headers, open_table);
+        return tomlTableHeader(headers, open_table);
     });
 
     tableArrayEntryHeaderRule = this.RULE('tableArrayEntryHeaderRule', () => {
@@ -148,7 +121,7 @@ export class TomlParser extends ct.Parser {
             { ALT: () => this.CONSUME(l.CloseTableArrayItem) },
             { ALT: () => this.CONSUME(ct.EOF) }
         ]);
-        return new TomlTableArrayEntryHeader(headers, open_table);
+        return tomlTableArrayEntryHeader(headers, open_table);
     });
 
     basicStringRule = this.RULE('basicStringRule', () => {
@@ -163,7 +136,7 @@ export class TomlParser extends ct.Parser {
             ])
         });
         this.CONSUME(l.CloseBasicString);
-        return new TomlAtomicString(fullImage, basicString);
+        return tomlAtomicString(fullImage, basicString);
 
     });
 
@@ -172,7 +145,7 @@ export class TomlParser extends ct.Parser {
         this.CONSUME(l.OpenLiteralString);
         this.OPTION(() => { literalString = this.CONSUME(l.LiteralString).image });
         this.CONSUME(l.CloseLiteralString);
-        return new TomlAtomicString(literalString, literalString);
+        return tomlAtomicString(literalString, literalString);
     });
 
     multiLineBasicStringRule = this.RULE('multiLineBasicStringRule', () => {
@@ -187,7 +160,7 @@ export class TomlParser extends ct.Parser {
             ])
         });
         this.CONSUME(l.CloseMultiLineBasicString);
-        return new TomlAtomicString(fullImage, tools.trimWhiteSpacePrefix(multiLineString));
+        return tomlAtomicString(fullImage, tools.trimWhiteSpacePrefix(multiLineString));
     });
 
     multiLineLiteralStringRule = this.RULE('multiLineLiteralStringRule', () => {
@@ -197,7 +170,7 @@ export class TomlParser extends ct.Parser {
             value = this.CONSUME(l.MultiLineLiteralString).image;
         });
         this.CONSUME(l.CloseMultiLineLiteralString);
-        return new TomlAtomicString(value, tools.trimWhiteSpacePrefix(value));
+        return tomlAtomicString(value, tools.trimWhiteSpacePrefix(value));
     });
 
     //bareKeyworkRule = this.RULE('bareKeyword', () => {this.CONSUME(l.Identifier)});

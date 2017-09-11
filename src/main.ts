@@ -10,28 +10,28 @@ reader.readToml(input, true);
 
 function bombadilToTomlTestAtomicValue(input: ast.TomlAtomicValue) {
     switch (input.type) {
-        case 'atomicInteger': {
+        case ast.atomicInteger: {
             return { type: 'integer', value: input.image };
         }
-        case 'atomicFloat': {
+        case ast.atomicFloat: {
             return { type: 'float', value: input.value.toString() };
         }
-        case 'atomicBoolean': {
+        case ast.atomicBoolean: {
             return { type: 'bool', value: input.image.toString() };
         }
-        case 'atomicString': {
+        case ast.atomicString: {
             return { type: 'string', value: input.value };
         }
-        case 'localDateTime': {
+        case ast.localDateTime: {
             return { type: 'datetime', value: input.image };
         }
-        case 'offsetDateTime': {
+        case ast.offsetDateTime: {
             return { type: 'datetime', value: input.image };
         }
-        case 'localDate': {
+        case ast.localDate: {
             return { type: 'datetime', value: input.image };
         }
-        case 'localTime': {
+        case ast.localTime: {
             return { type: 'datetime', value: input.image };
         }
 
