@@ -13,6 +13,8 @@ export interface ITomlException {
 
 export type TomlError = ct.ILexingError | ct.exceptions.IRecognitionException | ITomlException;
 
+export type Dictionary = { [key: string]: any };
+
 export class TomlReader {
     result: any;
     entries: ast.TopLevelTomlDocumentEntry[];
@@ -56,9 +58,9 @@ export class TomlReader {
 function load_toml_document(entries: ast.TopLevelTomlDocumentEntry[], toml_exceptions: TomlError[], full_value: boolean) {
     let root = {};
     // keeps the tables that have been directly defined
-    let directly_initialized_tables = [];
+    let directly_initialized_tables: Array<Dictionary> = [];
     // keep the table arrays defined using [[ ]]
-    let headers_initialized_table_arrays = [];
+    let headers_initialized_table_arrays: Array<Dictionary> = [];
     let current = root;
     for (let entry of entries) {
         if (entry.type == ast.keyValue) {
@@ -83,21 +85,21 @@ function load_toml_document(entries: ast.TopLevelTomlDocumentEntry[], toml_excep
 /**
  * Returns whether the input is a table or not
  */
-function isTable(obj): boolean {
+function isTable(obj: {}): boolean {
     return (obj != null) && (typeof obj === 'object') && !(obj instanceof Array)
 }
 
 /**
  * Returns whether the input is an array or tables or not
  */
-function isTableArray(obj): boolean {
+function isTableArray(obj: {}): boolean {
     return (obj != null) && (obj instanceof Array) && isTable(obj[0]);
 }
 
 /**
  * Returns whether the input is a table or an array or tables or not
  */
-function isTableOrTableArray(obj): boolean {
+function isTableOrTableArray(obj: {}): boolean {
     return isTable(obj) || isTableArray(obj);
 }
 
@@ -107,7 +109,7 @@ function isTableOrTableArray(obj): boolean {
  * @param parent the table to which the new table hierarchy will be attached
  * @param names the names of the tables
  */
-function init_table(parent, names, directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions: TomlError[], parser_token: ct.IToken): object {
+function init_table(parent: Dictionary, names: string[], directly_initialized_tables: Array<Dictionary>, headers_initialized_table_arrays: Array<Dictionary>, isArray: boolean, toml_exceptions: TomlError[], parser_token: ct.IToken): object {
     let context = parent[names[0]];
     if ((context != undefined) && !isTableOrTableArray(context)) {
         toml_exceptions.push({ message: 'Path already contains a value', token: parser_token });
@@ -176,7 +178,7 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
  * @param kv the key-value pair
  * @param current the current context
  */
-function processKeyValue(kv: ast.TomlKeyValue, current: object, directly_initialized_tables: any[], toml_exceptions, parser_token: ct.IToken, full_value) {
+function processKeyValue(kv: ast.TomlKeyValue, current: { [key: string]: any }, directly_initialized_tables: any[], toml_exceptions: TomlError[], parser_token: ct.IToken, full_value: boolean) {
     let value = tomlValueToObject(kv.value, full_value, toml_exceptions);
     if (current[kv.key] != undefined) {
         // can we statically define a table that has been implicitely defined?
@@ -204,8 +206,11 @@ function everySameType(array: ast.TomlArray) {
 /**
  * Returns a toml value transformed to a simple JSON object (a string, a number, an array or an object)
  * @param value the toml value
+ * 
+ * NB - If there were distinct versions of this function (one for full value, one not), we'd get a much
+ * more precise picture of the types for the case of full_value==true.
  */
-function tomlValueToObject(value: ast.TomlValue, full_value: boolean, toml_exceptions) {
+function tomlValueToObject(value: ast.TomlValue, full_value: boolean, toml_exceptions: TomlError[]): any {
     switch (value.type) {
         case ast.offsetDateTime:
             return full_value ? value : value.value;
@@ -231,7 +236,7 @@ function tomlValueToObject(value: ast.TomlValue, full_value: boolean, toml_excep
             let v = value.contents.map(item => tomlValueToObject(item, full_value, toml_exceptions));
             return full_value ? value : v;
         case ast.inlineTable:
-            let newObject = {};
+            let newObject: { [key: string]: any } = {};
             for (let kv of value.bindings) {
                 let v = tomlValueToObject(kv.value, full_value, toml_exceptions);
                 newObject[kv.key] = v;

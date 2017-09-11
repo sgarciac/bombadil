@@ -5,7 +5,7 @@
     "declaration": true,
     "sourceMap": true,
     "watch": false,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "outDir": "lib"
   },
   "include": [

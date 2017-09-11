@@ -41,13 +41,13 @@ function bombadilToTomlTestAtomicValue(input: ast.TomlAtomicValue) {
     }
 }
 
-function bombadilToTomlTest(input): any {
+function bombadilToTomlTest(input: any): any {
     if (input.hasOwnProperty('type')) {
         return bombadilToTomlTestAtomicValue(input);
     } else if (input instanceof Array) {
         return { type: 'array', value: input.map(bombadilToTomlTest) };
     } else {
-        let newObj = {}
+        let newObj: { [key: string]: any } = {}
         for (let property in input) {
             newObj[property] = bombadilToTomlTest(input[property]);
         }
