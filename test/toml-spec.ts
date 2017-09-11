@@ -1,10 +1,10 @@
 import { readFileSync } from 'fs';
 import * as path from 'path';
-import { TomlReader } from '..';
+import { TomlReader } from '../src/bombadil';
 import { safeLoad } from 'js-yaml';
 
 function readSample(name: string): string {
-    return readFileSync(path.join(__dirname, 'samples', name)).toString();
+    return readFileSync(path.join(__dirname, 'toml-spec-samples', name)).toString();
 }
 
 function compare(toml: string) {
