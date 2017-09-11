@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Hard Example TOML 1`] = `
+Object {
+  "the": Object {
+    "hard": Object {
+      "another_test_string": "§á₥è ƭλïñϱ, βúƭ ωïƭλ á ƨƭřïñϱ #",
+      "harder_test_string": " Âñδ ωλèñ \\"'ƨ ářè ïñ ƭλè ƨƭřïñϱ, áℓôñϱ ωïƭλ # \\"",
+      "test_array": Array [
+        "] ",
+        " # ",
+      ],
+      "test_array2": Array [
+        "Tèƨƭ #11 ]ƥřôƲèδ ƭλáƭ",
+        "Éжƥèřï₥èñƭ #9 ωáƨ á ƨúççèƨƨ",
+      ],
+      "βïƭ#": Object {
+        "multi_line_array": Array [
+          "]",
+        ],
+        "ωλáƭ?": "Ýôú δôñ'ƭ ƭλïñƙ ƨô₥è úƨèř ωôñ'ƭ δô ƭλáƭ?",
+      },
+    },
+    "test_string": "Ýôú'ℓℓ λáƭè ₥è áƒƭèř ƭλïƨ - #",
+  },
+}
+`;

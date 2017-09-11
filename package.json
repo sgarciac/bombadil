@@ -18,17 +18,39 @@
     "moment": "^2.18.1"
   },
   "devDependencies": {
+    "@types/jest": "^20.0.8",
+    "@types/js-yaml": "^3.9.1",
     "@types/lodash.every": "^4.6.2",
     "@types/lodash.includes": "^4.3.2",
     "@types/lodash.last": "^3.0.2",
     "@types/node": "^7.0.12",
+    "jest": "^21.0.2",
+    "js-yaml": "^3.10.0",
+    "ts-jest": "^21.0.0",
     "ts-loader": "^2.0.3",
     "tslint": "^5.1.0",
     "tslint-loader": "^3.5.3",
-    "typescript": "^2.2.2"
+    "typescript": "^2.4.0"
   },
   "scripts": {
     "build": "tsc -p .",
+    "test": "jest",
     "lint": "tslint -c tslint.json 'src/*.ts'"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/lib/"
+    ],
+    "testRegex": "(/test/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
   }
 }
