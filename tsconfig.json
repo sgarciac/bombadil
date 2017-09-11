@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
-    "target":"es5",
+    "target": "es5",
     "module": "commonjs",
     "declaration": true,
     "sourceMap": true,
     "watch": false,
-    "outDir" : "lib"
+    "noImplicitAny": false,
+    "outDir": "lib"
   },
   "include": [
     "src"
   ],
   "compileOnSave": false,
   "buildOnSave": true,
-  "atom": { "rewriteTsconfig": false }
+  "atom": {
+    "rewriteTsconfig": false
+  }
 }

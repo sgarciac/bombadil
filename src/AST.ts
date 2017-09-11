@@ -43,14 +43,14 @@ export function tomlInlineTable(bindings: TomlKeyValue[]): TomlInlineTable {
     return { type: inlineTable, bindings: bindings };
 }
 
-export const array: 'array' = 'array';
+export const arrayType: 'tomlArray' = 'tomlArray';
 export interface TomlArray {
-    type: typeof array;
+    type: typeof arrayType;
     contents: TomlValue[];
     token: ct.IToken;
 }
 export function tomlArray(contents: TomlValue[], token: ct.IToken) {
-    return { type: array, contents: contents, token: token };
+    return { type: arrayType, contents: contents, token: token };
 }
 
 // Atomic Values

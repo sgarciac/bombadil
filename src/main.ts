@@ -41,7 +41,7 @@ function bombadilToTomlTestAtomicValue(input: ast.TomlAtomicValue) {
     }
 }
 
-function bombadilToTomlTest(input) {
+function bombadilToTomlTest(input): any {
     if (input.hasOwnProperty('type')) {
         return bombadilToTomlTestAtomicValue(input);
     } else if (input instanceof Array) {

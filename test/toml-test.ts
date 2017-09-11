@@ -1,40 +1,37 @@
 import { readFileSync } from 'fs';
 import * as path from 'path';
 import { TomlReader, TomlError } from '../src/bombadil';
-import {
-    TomlAtomicValue, TomlAtomicValueType, TomlArray, TopLevelTomlDocumentEntry,
-    TomlKeyValue, TomlTableArrayEntryHeader,
-} from '../src/parser';
+import * as ast from '../src/AST';
 import { safeLoad } from 'js-yaml';
 
 function readSample(name: string): string {
     return readFileSync(path.join(__dirname, 'toml-test-samples', name)).toString();
 }
 
-function bombadilToTomlTestAtomicValue(input: TomlAtomicValue) {
+function bombadilToTomlTestAtomicValue(input: ast.TomlAtomicValue) {
     switch (input.type) {
-        case TomlAtomicValueType.Integer: {
+        case ast.atomicInteger: {
             return { type: 'integer', value: input.image };
         }
-        case TomlAtomicValueType.Float: {
+        case ast.atomicFloat: {
             return { type: 'float', value: input.value.toString() };
         }
-        case TomlAtomicValueType.Boolean: {
+        case ast.atomicBoolean: {
             return { type: 'bool', value: input.image.toString() };
         }
-        case TomlAtomicValueType.String: {
+        case ast.atomicString: {
             return { type: 'string', value: input.value };
         }
-        case TomlAtomicValueType.LocalDateTime: {
+        case ast.localDateTime: {
             return { type: 'datetime', value: input.image };
         }
-        case TomlAtomicValueType.OffsetDateTime: {
+        case ast.offsetDateTime: {
             return { type: 'datetime', value: input.image };
         }
-        case TomlAtomicValueType.LocalDate: {
+        case ast.localDate: {
             return { type: 'datetime', value: input.image };
         }
-        case TomlAtomicValueType.LocalTime: {
+        case ast.localTime: {
             return { type: 'datetime', value: input.image };
         }
 
@@ -45,11 +42,12 @@ function bombadilToTomlTestAtomicValue(input: TomlAtomicValue) {
 }
 
 function bombadilToTomlTest(input, property: boolean) {
-    if (input instanceof TomlAtomicValue) {
+    if (input.hasOwnProperty('type')) {
+        if (input['type'] == ast.arrayType) {
+            let vals = input.contents.map((x) => bombadilToTomlTest(x, false));
+            return { type: 'array', value: vals };
+        }
         return bombadilToTomlTestAtomicValue(input);
-    } else if (input instanceof TomlArray) {
-        let vals = input.contents.map((x) => bombadilToTomlTest(x, false));
-        return { type: 'array', value: vals };
     } else if (input instanceof Array) {
         const value = input.map((x) => bombadilToTomlTest(x, false));
         // This is the bit that needed to be tweaked to match toml-test
@@ -72,8 +70,6 @@ function compare(toml: string) {
     let baseline = JSON.parse(readSample(toml + '.json'));
     let reader = new TomlReader();
     reader.readToml(input, true);
-    // let reader2 = new TomlReader();
-    // reader2.readToml(input, false);
     let val = bombadilToTomlTest(reader.result, false);
     expect(val).toEqual(baseline);
 }

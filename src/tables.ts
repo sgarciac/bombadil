@@ -223,21 +223,23 @@ function tomlValueToObject(value: ast.TomlValue, full_value: boolean, toml_excep
             return full_value ? value : value.value;
         case ast.atomicBoolean:
             return full_value ? value : value.value;
-    }
-    if (value.type == ast.array) {
-        if (!everySameType(value)) {
-            toml_exceptions.push({ message: 'Elements in array are not of the same type', token: value.token });
+        case ast.arrayType:
+            if (!everySameType(value)) {
+                toml_exceptions.push({ message: 'Elements in array are not of the same type', token: value.token });
+                return null;
+            }
+            let v = value.contents.map(item => tomlValueToObject(item, full_value, toml_exceptions));
+            return full_value ? value : v;
+        case ast.inlineTable:
+            let newObject = {};
+            for (let kv of value.bindings) {
+                let v = tomlValueToObject(kv.value, full_value, toml_exceptions);
+                newObject[kv.key] = v;
+            }
+            return newObject;
+        default:
+            let foo: never = value; // Checks for exhaustion in above cases
+            console.error('Unhandled value: ', JSON.stringify(value));
             return null;
-        }
-        let v = value.contents.map(item => tomlValueToObject(item, full_value, toml_exceptions));
-        return full_value ? value : v;
-    }
-    if (value.type == ast.inlineTable) {
-        let newObject = {};
-        for (let kv of value.bindings) {
-            let v = tomlValueToObject(kv.value, full_value, toml_exceptions);
-            newObject[kv.key] = v;
-        }
-        return newObject;
     }
 }
