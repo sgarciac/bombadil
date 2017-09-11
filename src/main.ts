@@ -1,4 +1,5 @@
 import toml = require('./bombadil')
+import ast = require('./AST');
 
 import fs = require('fs')
 
@@ -7,30 +8,30 @@ var input = fs.readFileSync('/dev/stdin', 'utf8');
 var reader = new toml.TomlReader();
 reader.readToml(input, true);
 
-function bombadilToTomlTestAtomicValue(input: toml.TomlAtomicValue) {
+function bombadilToTomlTestAtomicValue(input: ast.TomlAtomicValue) {
     switch (input.type) {
-        case toml.TomlAtomicValueType.Integer: {
+        case ast.atomicInteger: {
             return { type: 'integer', value: input.image };
         }
-        case toml.TomlAtomicValueType.Float: {
+        case ast.atomicFloat: {
             return { type: 'float', value: input.value.toString() };
         }
-        case toml.TomlAtomicValueType.Boolean: {
+        case ast.atomicBoolean: {
             return { type: 'bool', value: input.image.toString() };
         }
-        case toml.TomlAtomicValueType.String: {
+        case ast.atomicString: {
             return { type: 'string', value: input.value };
         }
-        case toml.TomlAtomicValueType.LocalDateTime: {
+        case ast.localDateTime: {
             return { type: 'datetime', value: input.image };
         }
-        case toml.TomlAtomicValueType.OffsetDateTime: {
+        case ast.offsetDateTime: {
             return { type: 'datetime', value: input.image };
         }
-        case toml.TomlAtomicValueType.LocalDate: {
+        case ast.localDate: {
             return { type: 'datetime', value: input.image };
         }
-        case toml.TomlAtomicValueType.LocalTime: {
+        case ast.localTime: {
             return { type: 'datetime', value: input.image };
         }
 
@@ -40,8 +41,8 @@ function bombadilToTomlTestAtomicValue(input: toml.TomlAtomicValue) {
     }
 }
 
-function bombadilToTomlTest(input) {
-    if (input instanceof toml.TomlAtomicValue) {
+function bombadilToTomlTest(input): any {
+    if (input.hasOwnProperty('type')) {
         return bombadilToTomlTestAtomicValue(input);
     } else if (input instanceof Array) {
         return { type: 'array', value: input.map(bombadilToTomlTest) };
