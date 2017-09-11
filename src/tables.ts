@@ -61,7 +61,7 @@ function load_toml_document(entries: p.TopLevelTomlDocumentEntry[], toml_excepti
     let current = root;
     for (let entry of entries) {
         if (entry instanceof p.TomlKeyValue) {
-            if (!processKeyValue(entry, current, directly_initialized_tables, toml_exceptions, entry.token, full_value, false)) {
+            if (!processKeyValue(entry, current, directly_initialized_tables, toml_exceptions, entry.token, full_value)) {
                 return null;
             }
         } else if (entry instanceof p.TomlTableHeader) {
@@ -175,8 +175,8 @@ function init_table(parent, names, directly_initialized_tables, headers_initiali
  * @param kv the key-value pair
  * @param current the current context
  */
-function processKeyValue(kv: p.TomlKeyValue, current: object, directly_initialized_tables: any[], toml_exceptions, parser_token: ct.IToken, full_value: boolean, inline: boolean) {
-    let value = tomlValueToObject(kv.value, full_value, inline, toml_exceptions);
+function processKeyValue(kv: p.TomlKeyValue, current: object, directly_initialized_tables: any[], toml_exceptions, parser_token: ct.IToken, full_value: boolean) {
+    let value = tomlValueToObject(kv.value, full_value, toml_exceptions);
     if (current[kv.key] != undefined) {
         // can we statically define a table that has been implicitely defined?
         toml_exceptions.push({ message: 'Path has already been initialized to some value', token: parser_token });
@@ -213,7 +213,7 @@ function everySameType(array: p.TomlArray) {
  * Returns a toml value transformed to a simple JSON object (a string, a number, an array or an object)
  * @param value the toml value
  */
-function tomlValueToObject(value: p.TomlValue, full_value: boolean, inline: boolean, toml_exceptions) {
+function tomlValueToObject(value: p.TomlValue, full_value: boolean, toml_exceptions) {
     if (value instanceof p.TomlAtomicValue) {
         return full_value ? value : value.value;
     }
@@ -222,13 +222,13 @@ function tomlValueToObject(value: p.TomlValue, full_value: boolean, inline: bool
             toml_exceptions.push({ message: 'Elements in array are not of the same type', token: value.token });
             return null;
         }
-        let v = value.contents.map(item => tomlValueToObject(item, full_value, false, toml_exceptions));
+        let v = value.contents.map(item => tomlValueToObject(item, full_value, toml_exceptions));
         return full_value ? value : v;
     }
     if (value instanceof p.TomlInlineTable) {
         let newObject = {};
         for (let kv of value.bindings) {
-            let v = tomlValueToObject(kv.value, full_value, true, toml_exceptions);
+            let v = tomlValueToObject(kv.value, full_value, toml_exceptions);
             newObject[kv.key] = v;
         }
         return newObject;
