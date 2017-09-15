@@ -307,9 +307,9 @@ var modes: ct.IMultiModeLexerDefinition = {
 
 export var tomlLexer = new ct.Lexer(modes);
 
-export var allTokens = [];
+export var allTokens: ct.TokenConstructor[] = [];
 for (let symbol in this) {
-    if (this[symbol].tokenType) {
+    if (this[symbol].hasOwnProperty('tokenType')) {
         allTokens.push(this[symbol]);
     }
 }

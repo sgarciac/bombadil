@@ -1,6 +1,6 @@
 import moment = require('moment');
 
-function fromCodePoint(codePoint) {
+function fromCodePoint(codePoint: number) {
     let codeUnits = [];
     let highSurrogate;
     let lowSurrogate;
@@ -23,15 +23,15 @@ function cleanNumberImage(image: string): string {
     return image.replace('_', '');
 }
 
-export function startsWithEOL(string): boolean {
-    return string.match(/^(\n|\r\n)/);
+export function startsWithEOL(str: string): boolean {
+    return !!str.match(/^(\n|\r\n)/);
 }
 
-export function trimWhiteSpacePrefix(string) {
-    if (startsWithEOL(string)) {
-        return string.replace(/^[\s\uFEFF\xA0]+/, '');
+export function trimWhiteSpacePrefix(str: string): string {
+    if (startsWithEOL(str)) {
+        return str.replace(/^[\s\uFEFF\xA0]+/, '');
     } else {
-        return string;
+        return str;
     }
 }
 
@@ -60,10 +60,10 @@ export function parseLocalTime(image: string) {
     return moment('0000-00-00T' + image + 'Z').toDate();
 }
 
-export function parseEscapedUnicode(unicode): string {
+export function parseEscapedUnicode(unicode: string): string {
     let size = (unicode[1] == 'u') ? 4 : 8;
     let codeString = unicode.substr(2, 1 + size);
-    return fromCodePoint([parseInt(codeString, 16)]);
+    return fromCodePoint(parseInt(codeString, 16));
 }
 
 export function parseEscapedCharacter(escaped: string): string {
