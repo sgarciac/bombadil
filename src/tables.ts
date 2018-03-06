@@ -64,7 +64,7 @@ function load_toml_document(entries: ast.TopLevelTomlDocumentEntry[], toml_excep
     let current = root;
     for (let entry of entries) {
         if (entry.type == ast.keyValue) {
-            if (!processKeyValue(entry, current, directly_initialized_tables, toml_exceptions, entry.token, full_value)) {
+            if (processKeyValue(entry, current, directly_initialized_tables, toml_exceptions, entry.token, full_value) == null) {
                 return null;
             }
         } else if (entry.type == ast.tableHeader) {
