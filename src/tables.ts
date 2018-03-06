@@ -69,12 +69,12 @@ function load_toml_document(entries: ast.TopLevelTomlDocumentEntry[], toml_excep
             }
         } else if (entry.type == ast.tableHeader) {
             current = init_table(root, entry.headers, directly_initialized_tables, headers_initialized_table_arrays, false, toml_exceptions, entry.token);
-            if (!current) {
+            if (current == null) {
                 return null;
             }
         } else if (entry.type == ast.tableArrayEntryHeader) {
             current = init_table(root, entry.headers, directly_initialized_tables, headers_initialized_table_arrays, true, toml_exceptions, entry.token);
-            if (!current) {
+            if (current == null) {
                 return null;
             }
         }
