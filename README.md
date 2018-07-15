@@ -55,4 +55,14 @@ bombadil.TomlAtomicValueType[reader.result.names[0].type] // ->  'String'
 ```
 
 Notice that we also keep the original string representation of the value. This can be helpful for example to deal with big integers, which can not be handled by the javascript Number type.
-  
+
+## Known problems
+
+Chevrotain is known to rely on function names, which means that minification
+(such as performed by, for example,
+[Uglify](https://github.com/mishoo/UglifyJS)) can break bombadil. There are some
+solutions to this problem
+[here](https://github.com/SAP/chevrotain/blob/master/examples/parser/minification/README.md)
+
+Unless you are running the code inside the browser, and using minification, you
+probably don't need to worry about this.
