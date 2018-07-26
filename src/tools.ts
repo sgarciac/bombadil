@@ -20,7 +20,7 @@ function fromCodePoint(codePoint: number) {
 
 
 function cleanNumberImage(image: string): string {
-    return image.replace('_', '');
+    return image.replace(/_/g, '');
 }
 
 export function startsWithEOL(str: string): boolean {
