@@ -13,11 +13,11 @@ export class Identifier extends ct.Token {
 
 // Atomic values
 export class Integer extends ct.Token {
-    static PATTERN = /[+-]?(\d_|_\d|\d)+/;
+    static PATTERN = /[+-]?(([1-9](_\d|\d)*)|0)/;
 }
 
 export class Float extends ct.Token {
-    static PATTERN = /([+-]?(\d_|_\d|\d)+)(((\.(\d_|_\d|\d)+)([Ee]([+-])?(\d_|_\d|\d)+))|((\.(\d_|_\d|\d)+)|([Ee]([+-])?(\d_|_\d|\d)+)))/;
+    static PATTERN = /([+-]?(([1-9](_\d|\d)*)|0+))(((\.([0-9](_\d|\d)*))([Ee]([+-])?(([1-9](_\d|\d)*)|0)))|((\.([0-9](_\d|\d)*))|([Ee]([+-])?(([1-9](_\d|\d)*)|0))))/;
 }
 
 export class Booolean extends ct.Token {
