@@ -95,8 +95,9 @@ export class TomlParser extends ct.Parser {
                 headers.push(this.SUBRULE(this.identifierRule));
             }
         });
+        this.CONSUME(l.CloseTable);
         this.OR([
-            { ALT: () => this.CONSUME(l.CloseTable) },
+            { ALT: () => this.CONSUME(l.EndOfLine) },
             { ALT: () => this.CONSUME(ct.EOF) }
         ]);
         return ast.tomlTableHeader(headers, open_table);
@@ -110,8 +111,9 @@ export class TomlParser extends ct.Parser {
                 headers.push(this.SUBRULE(this.identifierRule));
             }
         });
+        this.CONSUME(l.CloseTableArrayItem)
         this.OR([
-            { ALT: () => this.CONSUME(l.CloseTableArrayItem) },
+            { ALT: () => this.CONSUME(l.EndOfLine) },
             { ALT: () => this.CONSUME(ct.EOF) }
         ]);
         return ast.tomlTableArrayEntryHeader(headers, open_table);
