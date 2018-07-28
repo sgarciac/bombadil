@@ -4,7 +4,9 @@ function fromCodePoint(codePoint: number) {
     let codeUnits = [];
     let highSurrogate;
     let lowSurrogate;
-    if (codePoint > 0x10FFFF) {
+    if ((codePoint > 0x10FFFF) ||
+        (codePoint > 0xD7FF && codePoint < 0xE000)
+    ) {
         throw RangeError('Invalid code point: ' + codePoint);
     }
     if (codePoint <= 0xFFFF) {
