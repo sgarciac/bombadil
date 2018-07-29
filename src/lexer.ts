@@ -1,6 +1,5 @@
 import ct = require('chevrotain')
 
-
 export class OneLineComment extends ct.Token {
     static PATTERN = /#.*/;
     static GROUP = ct.Lexer.SKIPPED;
@@ -19,6 +18,15 @@ export class Integer extends ct.Token {
 export class Float extends ct.Token {
     static PATTERN = /([+-]?(([1-9](_\d|\d)*)|0+))(((\.([0-9](_\d|\d)*))([Ee]([+-])?(([1-9](_\d|\d)*)|0)))|((\.([0-9](_\d|\d)*))|([Ee]([+-])?(([1-9](_\d|\d)*)|0))))/;
 }
+
+export class TomlInfinity extends ct.Token {
+    static PATTERN = /[+-]?inf/;
+}
+
+export class TomlNotANumber extends ct.Token {
+    static PATTERN = /[+-]?nan/;
+}
+
 
 export class Booolean extends ct.Token {
     static PATTERN = /true|false/;
@@ -206,6 +214,8 @@ var atomic_literals: ct.TokenConstructor[] = [
     LocalDate,
     LocalTime,
     Float,
+    TomlInfinity,
+    TomlNotANumber,
     Integer,
     Booolean,
 ]

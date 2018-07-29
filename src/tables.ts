@@ -226,6 +226,10 @@ function tomlValueToObject(value: ast.TomlValue, full_value: boolean, toml_excep
             return full_value ? value : value.value;
         case ast.atomicFloat:
             return full_value ? value : value.value;
+        case ast.atomicNotANumber:
+            return full_value ? value : value.value;
+        case ast.atomicInfinity:
+            return full_value ? value : value.value;
         case ast.atomicBoolean:
             return full_value ? value : value.value;
         case ast.arrayType:

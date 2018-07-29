@@ -37,6 +37,8 @@ export class TomlParser extends ct.Parser {
         this.OR([
             // Atomic values
             { ALT: () => { let image = this.CONSUME(l.Float).image; value = ast.tomlAtomicFloat(image, tools.parseNumber(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.TomlInfinity).image; value = ast.tomlAtomicInfinity(image, tools.parseInfinity(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.TomlNotANumber).image; value = ast.tomlAtomicNotANumber(image, tools.parseNotANumber(image)) } },
             { ALT: () => { let image = this.CONSUME(l.Integer).image; value = ast.tomlAtomicInteger(image, tools.parseNumber(image)) } },
             { ALT: () => { let image = this.CONSUME(l.Booolean).image; value = ast.tomlAtomicBoolean(image, tools.parseBoolean(image)) } },
             { ALT: () => { let image = this.CONSUME(l.OffsetDateTime).image; value = ast.tomlAtomicOffsetDateTime(image, tools.parseOffetDateTime(image)) } },

@@ -134,6 +134,23 @@ export function tomlAtomicFloat(image: string, value: number): TomlAtomicFloat {
     return { type: atomicFloat, image: image, value: value };
 }
 
+export const atomicNotANumber: 'atomicNotANumber' = 'atomicNotANumber';
+export interface TomlAtomicNotANumber extends TomlAtomicGeneric<number> {
+    type: typeof atomicNotANumber;
+}
+export function tomlAtomicNotANumber(image: string, value: number): TomlAtomicNotANumber {
+    return { type: atomicNotANumber, image: image, value: value };
+}
+
+export const atomicInfinity: 'atomicInfinity' = 'atomicInfinity';
+export interface TomlAtomicInfinity extends TomlAtomicGeneric<number> {
+    type: typeof atomicInfinity;
+}
+export function tomlAtomicInfinity(image: string, value: number): TomlAtomicInfinity {
+    return { type: atomicInfinity, image: image, value: value };
+}
+
+
 export const atomicBoolean: 'atomicBoolean' = 'atomicBoolean';
 export interface TomlAtomicBoolean extends TomlAtomicGeneric<boolean> {
     type: typeof atomicBoolean;
@@ -145,7 +162,7 @@ export function tomlAtomicBoolean(image: string, value: boolean): TomlAtomicBool
 // Now we define a few convenient union types to represent essentially different
 // grammatic productions
 export type TomlAtomicValue =
-    TomlAtomicDateTime | TomlAtomicString | TomlAtomicInteger | TomlAtomicFloat | TomlAtomicBoolean;
+    TomlAtomicDateTime | TomlAtomicString | TomlAtomicInteger | TomlAtomicFloat | TomlAtomicBoolean | TomlAtomicInfinity | TomlAtomicNotANumber;
 
 export type TopLevelTomlDocumentEntry = (TomlKeyValue | TomlTableHeader | TomlTableArrayEntryHeader)
 
