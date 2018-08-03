@@ -43,24 +43,24 @@ export function tomlTableArrayEntryHeader(headers: string[], token: ct.IToken): 
 }
 
 // Bindings
-export const keyValue: 'keyValue' = 'keyValue';
-export interface TomlKeyValue {
-    type: typeof keyValue;
-    key: string;
+export const keysValue: 'keysValue' = 'keysValue';
+export interface TomlKeysValue {
+    type: typeof keysValue;
+    keys: string[];
     value: any;
     token: ct.IToken;
 }
-export function tomlKeyValue(key: string, value: any, token: ct.IToken): TomlKeyValue {
-    return { type: keyValue, key: key, value: value, token: token }
+export function tomlKeysValue(keys: string[], value: any, token: ct.IToken): TomlKeysValue {
+    return { type: keysValue, keys: keys, value: value, token: token }
 };
 
 // Structures
 export const inlineTable: 'inlineTable' = 'inlineTable';
 export interface TomlInlineTable {
     type: typeof inlineTable;
-    bindings: TomlKeyValue[];
+    bindings: TomlKeysValue[];
 }
-export function tomlInlineTable(bindings: TomlKeyValue[]): TomlInlineTable {
+export function tomlInlineTable(bindings: TomlKeysValue[]): TomlInlineTable {
     return { type: inlineTable, bindings: bindings };
 }
 
@@ -164,7 +164,7 @@ export function tomlAtomicBoolean(image: string, value: boolean): TomlAtomicBool
 export type TomlAtomicValue =
     TomlAtomicDateTime | TomlAtomicString | TomlAtomicInteger | TomlAtomicFloat | TomlAtomicBoolean | TomlAtomicInfinity | TomlAtomicNotANumber;
 
-export type TopLevelTomlDocumentEntry = (TomlKeyValue | TomlTableHeader | TomlTableArrayEntryHeader)
+export type TopLevelTomlDocumentEntry = (TomlKeysValue | TomlTableHeader | TomlTableArrayEntryHeader)
 
 export type TomlValue = (
     TomlAtomicValue |

@@ -12,7 +12,7 @@ export class TomlParser extends ct.Parser {
                 [
                     { ALT: () => { documentEntries.push(this.SUBRULE(this.tableHeaderRule)) } },
                     { ALT: () => { documentEntries.push(this.SUBRULE(this.tableArrayEntryHeaderRule)) } },
-                    { ALT: () => { documentEntries.push(this.SUBRULE(this.keyValueRule)) } },
+                    { ALT: () => { documentEntries.push(this.SUBRULE(this.keysValueRule)) } },
                     { ALT: () => { this.CONSUME(l.EndOfLine) } }
                 ]
             );
@@ -20,8 +20,14 @@ export class TomlParser extends ct.Parser {
         return documentEntries;
     });
 
-    keyValueRule = this.RULE('keyValueRule', () => {
-        let keyword = this.SUBRULE(this.identifierRule);
+    keysValueRule = this.RULE('keysValueRule', () => {
+        let keys: string[] = [];
+        this.AT_LEAST_ONE_SEP({
+            SEP: l.Dot, DEF: () => {
+                keys.push(this.SUBRULE(this.identifierRule));
+            }
+        });
+
         let equals = this.CONSUME(l.OpenValue);
         let value = this.SUBRULE(this.valueRule);
         this.OR([
@@ -29,7 +35,7 @@ export class TomlParser extends ct.Parser {
             { ALT: () => this.CONSUME(ct.EOF) }
         ]);
         //this.CONSUME(l.CloseValue);
-        return ast.tomlKeyValue(keyword, value, equals);
+        return ast.tomlKeysValue(keys, value, equals);
     })
 
     valueRule = this.RULE('valueRule', () => {
@@ -75,14 +81,19 @@ export class TomlParser extends ct.Parser {
     })
 
     inlineTableRule = this.RULE('inlineTableRule', () => {
-        let bindings: ast.TomlKeyValue[] = [];
+        let bindings: ast.TomlKeysValue[] = [];
         this.CONSUME(l.OpenInlineTable);
         this.MANY(() => {
-            let identifier = this.SUBRULE(this.identifierRule);
+            let keys: string[] = [];
+            this.AT_LEAST_ONE_SEP({
+                SEP: l.Dot, DEF: () => {
+                    keys.push(this.SUBRULE(this.identifierRule));
+                }
+            });
             let equals = this.CONSUME(l.OpenInlineValue);
             let value = this.SUBRULE(this.valueRule);
             this.CONSUME(l.CloseInlineValue);
-            bindings.push(ast.tomlKeyValue(identifier, value, equals));
+            bindings.push(ast.tomlKeysValue(keys, value, equals));
         });
         this.CONSUME(l.CloseInlineTable);
         return ast.tomlInlineTable(bindings);

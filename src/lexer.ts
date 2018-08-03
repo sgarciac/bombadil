@@ -242,8 +242,9 @@ var modes: ct.IMultiModeLexerDefinition = {
             OpenTableArrayItem,
             OpenTable,
             Identifier,
-            EndOfLine,
             ...open_identifier_strings,
+            Dot,
+            EndOfLine,
             ...single_line_skipped,
             OpenValue,
         ],
@@ -283,6 +284,7 @@ var modes: ct.IMultiModeLexerDefinition = {
         inline_table: [
             Identifier,
             ...open_identifier_strings,
+            Dot,
             ...single_line_skipped,
             OpenInlineValue,
             CloseInlineTable
@@ -323,6 +325,3 @@ for (let symbol in this) {
         allTokens.push(this[symbol]);
     }
 }
-
-
-
