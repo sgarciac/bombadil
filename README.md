@@ -1,7 +1,12 @@
 # bombadil
 Copyright Sergio Garcia
 
-A [chevrotain](https://github.com/SAP/chevrotain) based [TOML v0.4.0](https://github.com/toml-lang/toml) parser, written in typescript.
+A [chevrotain](https://github.com/SAP/chevrotain) based [TOML v0.5.0](https://github.com/toml-lang/toml) parser, written in typescript.
+
+## Releases
+
+TOML 0.5: [Bombadil 2.0.0-0 (prerelease)](https://www.npmjs.com/package/@sgarciac/bombadil/v/2.0.0-0)
+TOML 0.4: [Bombadil 1.0.0 (stable)](https://www.npmjs.com/package/@sgarciac/bombadil/v/1.0.0)
 
 ## Usage
 
