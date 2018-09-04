@@ -149,9 +149,9 @@ export class TomlParser extends ct.Parser {
     });
 
     literalStringRule = this.RULE('literalStringRule', (): ast.TomlAtomicString => {
-        let literalString: string;
+        let literalString: string = '';
         this.CONSUME(l.OpenLiteralString);
-        this.OPTION(() => { literalString = this.CONSUME(l.LiteralString).image });
+        this.OPTION(() => { literalString += this.CONSUME(l.LiteralString).image });
         this.CONSUME(l.CloseLiteralString);
         return ast.tomlAtomicString(literalString, literalString);
     });
