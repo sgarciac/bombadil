@@ -151,11 +151,11 @@ export class EscapedUnicode extends ct.Token {
 }
 
 export class SubBasicString extends ct.Token {
-    static PATTERN = /[^\\"\r\n]+/
+    static PATTERN = /[^\\"\r\n\u007f\u0000-\u001f]+/
 }
 
 export class SubMultiLineBasicString extends ct.Token {
-    static PATTERN = /([^\\"]|"(?!""))+/
+    static PATTERN = /(\n|\r|[^\\"\u007f\u0000-\u001f]|"(?!""))+/
 }
 
 export class MultiLineIgnorableSubstring extends ct.Token {
@@ -164,11 +164,11 @@ export class MultiLineIgnorableSubstring extends ct.Token {
 }
 
 export class LiteralString extends ct.Token {
-    static PATTERN = /[^'\n\r]+/;
+    static PATTERN = /[^'\n\r\u007f\u0000-\u001f]+/;
 }
 
 export class MultiLineLiteralString extends ct.Token {
-    static PATTERN = /([^']|'(?!''))+/;
+    static PATTERN = /(\n|\r|[^'\u007f\u0000-\u001f]|'(?!''))+/;
 }
 
 export class OpenArray extends ct.Token {
