@@ -5,6 +5,7 @@ A [chevrotain](https://github.com/SAP/chevrotain) based [TOML v0.5.0](https://gi
 
 ## Releases
 
+  * TOML 0.5: [Bombadil 2.0.0](https://www.npmjs.com/package/@sgarciac/bombadil/v/2.0.0)
   * TOML 0.5: [Bombadil 2.0.0-1 (prerelease)](https://www.npmjs.com/package/@sgarciac/bombadil/v/2.0.0-1)
   * TOML 0.4: [Bombadil 1.0.0 (stable)](https://www.npmjs.com/package/@sgarciac/bombadil/v/1.0.0)
 
