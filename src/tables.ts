@@ -34,14 +34,19 @@ export class TomlReader {
             this.result = undefined;
             return;
         }
-        let parser = new p.TomlParser(lexer_result.tokens, l.allTokens);
-        this.entries = parser.documentRule();
-        if (parser.errors.length > 0) {
-            this.errors = parser.errors;
+        try {
+            let parser = new p.TomlParser(lexer_result.tokens, l.allTokens);
+            this.entries = parser.documentRule();
+            if (parser.errors.length > 0) {
+                this.errors = parser.errors;
+                this.result = undefined;
+                return;
+            }
+            this.result = load_toml_document(this.entries, this.errors, full_value);
+        } catch (error) {
+            this.errors = [error];
             this.result = undefined;
-            return;
         }
-        this.result = load_toml_document(this.entries, this.errors, full_value);
     }
 }
 

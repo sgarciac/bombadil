@@ -139,7 +139,17 @@ export class TomlParser extends ct.Parser {
         this.MANY(() => {
             this.OR([
                 { ALT: () => { let image = this.CONSUME(l.EscapedChar).image; basicString += tools.parseEscapedCharacter(image); fullImage += image } },
-                { ALT: () => { let image = this.CONSUME(l.EscapedUnicode).image; basicString += tools.parseEscapedUnicode(image); fullImage += image } },
+                {
+                    ALT: () => {
+                        let token = this.CONSUME(l.EscapedUnicode);
+                        try {
+                            basicString += tools.parseEscapedUnicode(token.image);
+                        } catch {
+                            throw { message: 'Bad codepoint', token: token };
+                        }
+                        fullImage += token.image
+                    }
+                },
                 { ALT: () => { let image = this.CONSUME(l.SubBasicString).image; basicString += image; fullImage += image } }
             ])
         });
@@ -163,7 +173,17 @@ export class TomlParser extends ct.Parser {
         this.MANY(() => {
             this.OR([
                 { ALT: () => { let image = this.CONSUME(l.EscapedChar).image; multiLineString += tools.parseEscapedCharacter(image); fullImage += image } },
-                { ALT: () => { let image = this.CONSUME(l.EscapedUnicode).image; multiLineString += tools.parseEscapedUnicode(image); fullImage += image } },
+                {
+                    ALT: () => {
+                        let token = this.CONSUME(l.EscapedUnicode);
+                        try {
+                            multiLineString += tools.parseEscapedUnicode(token.image);
+                        } catch {
+                            throw { message: 'Bad codepoint', token: token };
+                        }
+                        fullImage += token.image
+                    }
+                },
                 { ALT: () => { let image = this.CONSUME(l.SubMultiLineBasicString).image; multiLineString += image; fullImage += image } }
             ])
         });
