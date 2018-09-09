@@ -38,8 +38,24 @@ export function trimWhiteSpacePrefix(str: string): string {
 }
 
 // Parsing of TOML values
-export function parseNumber(image: string): number {
+export function parseFloat(image: string): number {
     return Number(cleanNumberImage(image));
+}
+
+export function parseDecInteger(image: string): number {
+    return parseInt(cleanNumberImage(image));
+}
+
+export function parseBinaryInteger(image: string): number {
+    return parseInt(cleanNumberImage(image.substr(2)), 2);
+}
+
+export function parseOctalInteger(image: string): number {
+    return parseInt(cleanNumberImage(image.substr(2)), 8);
+}
+
+export function parseHexInteger(image: string): number {
+    return parseInt(cleanNumberImage(image.substr(2)), 16);
 }
 
 export function parseInfinity(image: string) {

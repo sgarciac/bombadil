@@ -42,10 +42,13 @@ export class TomlParser extends ct.Parser {
         let value: any;
         this.OR([
             // Atomic values
-            { ALT: () => { let image = this.CONSUME(l.Float).image; value = ast.tomlAtomicFloat(image, tools.parseNumber(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.Float).image; value = ast.tomlAtomicFloat(image, tools.parseFloat(image)) } },
             { ALT: () => { let image = this.CONSUME(l.TomlInfinity).image; value = ast.tomlAtomicInfinity(image, tools.parseInfinity(image)) } },
             { ALT: () => { let image = this.CONSUME(l.TomlNotANumber).image; value = ast.tomlAtomicNotANumber(image, tools.parseNotANumber(image)) } },
-            { ALT: () => { let image = this.CONSUME(l.Integer).image; value = ast.tomlAtomicInteger(image, tools.parseNumber(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.Integer).image; value = ast.tomlAtomicInteger(image, tools.parseDecInteger(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.BinaryInteger).image; value = ast.tomlAtomicInteger(image, tools.parseBinaryInteger(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.OctalInteger).image; value = ast.tomlAtomicInteger(image, tools.parseOctalInteger(image)) } },
+            { ALT: () => { let image = this.CONSUME(l.HexInteger).image; value = ast.tomlAtomicInteger(image, tools.parseHexInteger(image)) } },
             { ALT: () => { let image = this.CONSUME(l.Booolean).image; value = ast.tomlAtomicBoolean(image, tools.parseBoolean(image)) } },
             { ALT: () => { let image = this.CONSUME(l.OffsetDateTime).image; value = ast.tomlAtomicOffsetDateTime(image, tools.parseOffetDateTime(image)) } },
             { ALT: () => { let image = this.CONSUME(l.LocalDateTime).image; value = ast.tomlAtomicLocalDateTime(image, tools.parseLocalDateTime(image)) } },

@@ -15,6 +15,18 @@ export class Integer extends ct.Token {
     static PATTERN = /[+-]?(([1-9](_\d|\d)*)|0)/;
 }
 
+export class BinaryInteger extends ct.Token {
+    static PATTERN = /0b[10](_[01]|[01])*/;
+}
+
+export class OctalInteger extends ct.Token {
+    static PATTERN = /0o[0-7](_[0-7]|[0-7])*/;
+}
+
+export class HexInteger extends ct.Token {
+    static PATTERN = /0x[0-9A-Fa-f](_[0-9A-Fa-f]|[0-9A-Fa-f])*/;
+}
+
 export class Float extends ct.Token {
     static PATTERN = /([+-]?(([1-9](_\d|\d)*)|0+))(((\.([0-9](_\d|\d)*))([Ee]([+-])?(([1-9](_\d|\d)*)|0)))|((\.([0-9](_\d|\d)*))|([Ee]([+-])?(([1-9](_\d|\d)*)|0))))/;
 }
@@ -216,6 +228,9 @@ var atomic_literals: ct.TokenConstructor[] = [
     Float,
     TomlInfinity,
     TomlNotANumber,
+    BinaryInteger,
+    OctalInteger,
+    HexInteger,
     Integer,
     Booolean,
 ]
