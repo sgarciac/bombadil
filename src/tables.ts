@@ -61,7 +61,7 @@ export class TomlReader {
  */
 
 function load_toml_document(entries: ast.TopLevelTomlDocumentEntry[], toml_exceptions: TomlError[], full_value: boolean) {
-    let root = {};
+    let root = createEmptyTable();
     // keeps the tables that have been directly defined
     let directly_initialized_tables: Array<Dictionary> = [];
     // keep the table arrays defined using [[ ]]
@@ -158,7 +158,7 @@ function init_table(
                         toml_exceptions.push({ message: 'An static table array has already been initialized for path.', token: parser_token });
                         return null;
                     } else {
-                        let table = {};
+                        let table = createEmptyTable();
                         context.push(table);
                         // table arrays are always directly initialized
                         directly_initialized_tables.push(table);
@@ -166,7 +166,7 @@ function init_table(
                     }
                 }
                 else if (context === undefined) {
-                    context = {};
+                    context = createEmptyTable();
                     if (isArray) {
                         let table_array = [context];
                         headers_initialized_table_arrays.push(table_array);
@@ -189,7 +189,7 @@ function init_table(
                 return init_table(last(context), names.slice(1), directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions, parser_token, directly_initialized);
             }
             else if (context === undefined) { // init a table indirectly
-                context = {};
+                context = createEmptyTable();
                 parent[names[0]] = context;
                 return init_table(context, names.slice(1), directly_initialized_tables, headers_initialized_table_arrays, isArray, toml_exceptions, parser_token, directly_initialized);
             } else {
@@ -272,7 +272,7 @@ function tomlValueToObject(value: ast.TomlValue, full_value: boolean, directly_i
             let v = value.contents.map(item => tomlValueToObject(item, full_value, directly_initialized_tables, headers_initialized_table_arrays, toml_exceptions, parser_token));
             return full_value ? value : v;
         case ast.inlineTable:
-            let newObject: { [key: string]: any } = {};
+            let newObject: { [key: string]: any } = createEmptyTable();
             for (let kv of value.bindings) {
                 let v = processKeysValue(kv, newObject, directly_initialized_tables, headers_initialized_table_arrays, toml_exceptions, parser_token, full_value)
             }
@@ -282,4 +282,8 @@ function tomlValueToObject(value: ast.TomlValue, full_value: boolean, directly_i
             console.error('Unhandled value: ', JSON.stringify(value));
             return null;
     }
+}
+
+function createEmptyTable(): any {
+    return Object.create(null);
 }
