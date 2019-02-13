@@ -42,7 +42,7 @@ function bombadilToTomlTestAtomicValue(input: ast.TomlAtomicValue) {
 }
 
 function bombadilToTomlTest(input, property: boolean) {
-    if (input.hasOwnProperty('type')) {
+    if (input['type']) {
         if (input['type'] == ast.arrayType) {
             let vals = input.contents.map((x) => bombadilToTomlTest(x, false));
             return { type: 'array', value: vals };
