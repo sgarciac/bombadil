@@ -11,7 +11,7 @@ export interface ITomlException {
     token: ct.IToken
 }
 
-export type TomlError = ct.ILexingError | ct.exceptions.IRecognitionException | ITomlException;
+export type TomlError = ct.ILexingError | ct.IRecognitionException | ITomlException;
 
 export type Dictionary = { [key: string]: any };
 
@@ -35,7 +35,8 @@ export class TomlReader {
             return;
         }
         try {
-            let parser = new p.TomlParser(lexer_result.tokens, l.allTokens);
+            let parser = new p.TomlParser(l.tomlLexerModes);
+            parser.input = lexer_result.tokens;
             this.entries = parser.documentRule();
             if (parser.errors.length > 0) {
                 this.errors = parser.errors;

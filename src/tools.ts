@@ -83,7 +83,7 @@ export function parseLocalDate(image: string) {
 }
 
 export function parseLocalTime(image: string) {
-    return moment('0000-00-00T' + image + 'Z').toDate();
+    return moment('0001-01-01T' + image + 'Z').toDate();
 }
 
 export function parseEscapedUnicode(unicode: string): string {

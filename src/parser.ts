@@ -5,7 +5,7 @@ import * as ast from './AST';
 
 export class TomlParser extends ct.Parser {
 
-    public documentRule: () => ast.TopLevelTomlDocumentEntry[] = this.RULE('documentRule', () => {
+    public documentRule = this.RULE<ast.TopLevelTomlDocumentEntry[]>('documentRule', () => {
         let documentEntries: ast.TopLevelTomlDocumentEntry[] = [];
         this.MANY(() => {
             this.OR(
@@ -215,9 +215,8 @@ export class TomlParser extends ct.Parser {
         return id;
     });
 
-    constructor(input: ct.IToken[], constructors: ct.TokenConstructor[]) {
-        super(input, constructors);
-        var $ = this;
-        ct.Parser.performSelfAnalysis(this);
+    constructor(tokenTypes: ct.TokenVocabulary) {
+        super(tokenTypes, { outputCst: false });
+        this.performSelfAnalysis();
     }
 }
