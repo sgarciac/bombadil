@@ -1,5 +1,13 @@
 {
-  "rules": {
-    "quotemark": [ true, "single" ]
-  }
+    "extends": [
+        "tslint:recommended",
+        "tslint-config-prettier"
+    ],
+    "rules": {
+    "no-console": [true],
+        "object-literal-sort-keys": false,
+        "interface-name": [true, "never-prefix"],
+        "max-classes-per-file": [true, 5],
+        "no-empty": [true, "allow-empty-catch", "allow-empty-functions"]
+    }
 }
