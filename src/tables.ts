@@ -19,34 +19,34 @@ export type TomlError =
 export type Dictionary = { [key: string]: any };
 
 export class TomlReader {
-  result: any;
-  entries: ast.TopLevelTomlDocumentEntry[];
-  errors: TomlError[];
+  public result: any;
+  public entries: ast.TopLevelTomlDocumentEntry[];
+  public errors: TomlError[];
 
   /**
    * Read a TOML document
    *
    * @param input the TOML document string
-   * @param full_value wheter the full typing information will be returned or not
+   * @param fullValue wheter the full typing information will be returned or not
    */
-  public readToml(input: string, full_value: boolean = false) {
+  public readToml(input: string, fullValue: boolean = false) {
     this.errors = [];
-    let lexer_result = l.tomlLexer.tokenize(input);
-    if (lexer_result.errors.length > 0) {
-      this.errors = lexer_result.errors;
+    const lexerResult = l.tomlLexer.tokenize(input);
+    if (lexerResult.errors.length > 0) {
+      this.errors = lexerResult.errors;
       this.result = undefined;
       return;
     }
     try {
-      let parser = new p.TomlParser(l.tomlLexerModes);
-      parser.input = lexer_result.tokens;
+      const parser = new p.TomlParser(l.tomlLexerModes);
+      parser.input = lexerResult.tokens;
       this.entries = parser.documentRule();
       if (parser.errors.length > 0) {
         this.errors = parser.errors;
         this.result = undefined;
         return;
       }
-      this.result = load_toml_document(this.entries, this.errors, full_value);
+      this.result = load_toml_document(this.entries, this.errors, fullValue);
     } catch (error) {
       this.errors = [error];
       this.result = undefined;
@@ -59,59 +59,59 @@ export class TomlReader {
  * which are of one of three types : TomlKeysValue, TomlTableHeader and TomlTableArrayEntryHader
  *
  * @param entries the result of a Toml Parser Document Rule
- * @param toml_exceptions an array that will be filled with toml exceptions, if they occur
- * @param full_value whether to return full meta-data for atomic values or not
+ * @param tomlExceptions an array that will be filled with toml exceptions, if they occur
+ * @param fullValue whether to return full meta-data for atomic values or not
  * @return an javascript object representing the toml document
  */
 
 function load_toml_document(
   entries: ast.TopLevelTomlDocumentEntry[],
-  toml_exceptions: TomlError[],
-  full_value: boolean
+  tomlExceptions: TomlError[],
+  fullValue: boolean
 ) {
-  let root = createEmptyTable();
+  const root = createEmptyTable();
   // keeps the tables that have been directly defined
-  let directly_initialized_tables: Array<Dictionary> = [];
+  const directlyInitializedTables: Dictionary[] = [];
   // keep the table arrays defined using [[ ]]
-  let headers_initialized_table_arrays: Array<Dictionary> = [];
+  const headersInitializedTableArrays: Dictionary[] = [];
   let current = root;
-  for (let entry of entries) {
-    if (entry.type == ast.keysValue) {
+  for (const entry of entries) {
+    if (entry.type === ast.keysValue) {
       if (
         processKeysValue(
           entry,
           current,
-          directly_initialized_tables,
-          headers_initialized_table_arrays,
-          toml_exceptions,
+          directlyInitializedTables,
+          headersInitializedTableArrays,
+          tomlExceptions,
           entry.token,
-          full_value
+          fullValue
         ) == null
       ) {
         return null;
       }
-    } else if (entry.type == ast.tableHeader) {
+    } else if (entry.type === ast.tableHeader) {
       current = init_table(
         root,
         entry.headers,
-        directly_initialized_tables,
-        headers_initialized_table_arrays,
+        directlyInitializedTables,
+        headersInitializedTableArrays,
         false,
-        toml_exceptions,
+        tomlExceptions,
         entry.token,
         true
       );
       if (current == null) {
         return null;
       }
-    } else if (entry.type == ast.tableArrayEntryHeader) {
+    } else if (entry.type === ast.tableArrayEntryHeader) {
       current = init_table(
         root,
         entry.headers,
-        directly_initialized_tables,
-        headers_initialized_table_arrays,
+        directlyInitializedTables,
+        headersInitializedTableArrays,
         true,
-        toml_exceptions,
+        tomlExceptions,
         entry.token,
         true
       );
@@ -354,68 +354,68 @@ function everySameType(array: ast.TomlArray) {
  */
 function tomlValueToObject(
   value: ast.TomlValue,
-  full_value: boolean,
-  directly_initialized_tables: any[],
-  headers_initialized_table_arrays: Array<Dictionary>,
-  toml_exceptions: TomlError[],
-  parser_token: ct.IToken
+  fullValue: boolean,
+  directlyInitializedTable: any[],
+  headersInitializedTableArrays: Dictionary[],
+  tomlExceptions: TomlError[],
+  parserToken: ct.IToken
 ): any {
   switch (value.type) {
     case ast.offsetDateTime:
-      return full_value ? value : value.value;
+      return fullValue ? value : value.value;
     case ast.localDateTime:
-      return full_value ? value : value.value;
+      return fullValue ? value : value.value;
     case ast.localDate:
-      return full_value ? value : value.value;
+      return fullValue ? value : value.value;
     case ast.localTime:
-      return full_value ? value : value.value;
+      return fullValue ? value : value.value;
     case ast.atomicString:
-      return full_value ? value : value.value;
+      return fullValue ? value : value.value;
     case ast.atomicInteger:
-      return full_value ? value : value.value;
+      return fullValue ? value : value.value;
     case ast.atomicFloat:
-      return full_value ? value : value.value;
+      return fullValue ? value : value.value;
     case ast.atomicNotANumber:
-      return full_value ? value : value.value;
+      return fullValue ? value : value.value;
     case ast.atomicInfinity:
-      return full_value ? value : value.value;
+      return fullValue ? value : value.value;
     case ast.atomicBoolean:
-      return full_value ? value : value.value;
+      return fullValue ? value : value.value;
     case ast.arrayType:
       if (!everySameType(value)) {
-        toml_exceptions.push({
+        tomlExceptions.push({
           message: "Elements in array are not of the same type",
           token: value.token
         });
         return null;
       }
-      let v = value.contents.map(item =>
+      const v = value.contents.map(item =>
         tomlValueToObject(
           item,
-          full_value,
-          directly_initialized_tables,
-          headers_initialized_table_arrays,
-          toml_exceptions,
-          parser_token
+          fullValue,
+          directlyInitializedTable,
+          headersInitializedTableArrays,
+          tomlExceptions,
+          parserToken
         )
       );
       return v;
     case ast.inlineTable:
-      let newObject: { [key: string]: any } = createEmptyTable();
+      const newObject: { [key: string]: any } = createEmptyTable();
       for (let kv of value.bindings) {
         processKeysValue(
           kv,
           newObject,
-          directly_initialized_tables,
-          headers_initialized_table_arrays,
-          toml_exceptions,
-          parser_token,
-          full_value
+          directlyInitializedTable,
+          headersInitializedTableArrays,
+          tomlExceptions,
+          parserToken,
+          fullValue
         );
       }
       return newObject;
     default:
-      let foo: never = value; // Checks for exhaustion in above cases
+      const foo: never = value; // Checks for exhaustion in above cases
       console.error("Unhandled value: ", JSON.stringify(value));
       return null;
   }
