@@ -11,7 +11,7 @@
   "author": "sergio <sergio.garcia@gmail.com>",
   "license": "Artistic-2.0",
   "dependencies": {
-    "chevrotain": "^4.2.0",
+    "chevrotain": "^4.3.1",
     "lodash.every": "^4.6.0",
     "lodash.includes": "^4.3.0",
     "lodash.last": "^3.0.0",
@@ -20,19 +20,19 @@
   "devDependencies": {
     "@types/jest": "^20.0.8",
     "@types/js-yaml": "^3.9.1",
-    "@types/lodash.every": "^4.6.2",
-    "@types/lodash.includes": "^4.3.2",
-    "@types/lodash.last": "^3.0.2",
-    "@types/node": "^7.0.12",
+    "@types/lodash.every": "^4.6.6",
+    "@types/lodash.includes": "^4.3.6",
+    "@types/lodash.last": "^3.0.6",
+    "@types/node": "^7.10.5",
     "jest": "^21.0.2",
-    "js-yaml": "^3.10.0",
+    "js-yaml": "^3.13.0",
     "prettier": "^1.16.4",
     "ts-jest": "^21.0.0",
     "ts-loader": "^2.0.3",
-    "tslint": "^5.1.0",
+    "tslint": "^5.14.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-loader": "^3.5.3",
-    "typescript": "^3.2.0"
+    "typescript": "^3.3.4000"
   },
   "scripts": {
     "build": "tsc -p .",
