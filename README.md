@@ -55,18 +55,61 @@ By default, the toml reader will map TOML values to javascript values as follows
   * Array -> Array
   * Table -> Object
 
-As you can see, there is some information loss. If you need the original typing information, you can pass a second parameter to ```readToml``` set to ```true```:
+### Full typing information
 
-```javascript
-var bombadil = require('@sgarciac/bombadil')
-var input = 'names = ["sergio","arturo"]'
-var reader = new bombadil.TomlReader
-reader.readToml(input, true)
-reader.result // -> { names:[ TomlAtomicValue { type: 4, image: 'sergio', value: 'sergio' },TomlAtomicValue { type: 4, image: 'arturo', value: 'arturo' } ] }
-bombadil.TomlAtomicValueType[reader.result.names[0].type] // ->  'String'
+As you can see in the previous example, there is some information loss. If you
+need the original typing information, you can pass a second parameter to
+```readToml``` set to ```true```. 
+
+This will parse the following TOML:
+
+```toml
+title = "TOML Example"
+
+[owner]
+name = "Tom Preston-Werner"
+dob = 1979-05-27T07:32:00Z # First class dates? Why not?
 ```
 
-Notice that we also keep the original string representation of the value. This can be helpful for example to deal with big integers, which can not be handled by the javascript Number type.
+to the following javascript object:
+
+```javascript
+
+{ type: 'table',
+  content:
+   { title:
+      { type: 'atomicString',
+        image: 'TOML Example',
+        value: 'TOML Example' },
+     owner:
+      { type: 'table',
+        content:
+         { name:
+            { type: 'atomicString',
+              image: 'Tom Preston-Werner',
+              value: 'Tom Preston-Werner' },
+           dob:
+            { type: 'offsetDateTime',
+              image: '1979-05-27T07:32:00Z',
+              value: 1979-05-27T07:32:00.000Z } } } } }
+```
+
+Documents are transformed as following:
+
+ * Toml's _tables_ (including the root one) and _primitive values_ (string,
+   integer, date, etc) are transformed to javascript objects with a 'type'
+   property that describe their type. For example, tables' type is the string 'table'.
+ * All Toml's arrays are transformed to javascript arrays
+ * Toml's tables corresponding javascript objects have a "content" property that
+   contains another javascript object (a dictionary), whose properties are the toml table's keys, and
+   they point to the transformation of the corresponding toml value.
+ * Toml's primitive values corresponding javascript objects include their toml image (a string), and also
+   the corresponding javascript primitive value.
+   
+Keeping the original string image of the value can be helpful, for
+example when dealing with big integers, which can not be handled by the javascript
+Number type.
+
 
 ## Known problems
 
